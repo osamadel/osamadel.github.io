@@ -1,4 +1,5 @@
-# Data Scientist @ Solutions by STC
+# Data Scientist
+ <!-- @ Solutions by STC -->
 
 *Passionate data scientist with over 4 years of experience in academia and industry. I solve hard problems and bring value to business by harnessing the power of data analysis and machine learning. My toolkit includes Python, probability and statistics using numpy, statsmodels and pingouin, machine and deep learning using scikit-learn and keras, visualization using matplotlib and plotly, and I'm currently making video tutorials on YouTube to share some the knowledge and tips I have found useful.*
 
