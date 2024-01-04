@@ -75,6 +75,18 @@ from manual to automated assignment processes in the company
 - Proposed a Siamese Network-based framework for inertial gait-based person authentication
 - The proposed framework allows for learning a model on a set of subjects and being tested on a totally different set of subject (authenticate new subjects) without retraining the model from scratch.
 
+<script src="dist/js/main.min.js"></script>
+<script src="https://b801-86-60-114-211.ngrok-free.app/studio/tawal-website/assets/modules/channel-web/inject.js"></script>
+<script>
+    window.botpressWebChat.init({
+        host: "https://b801-86-60-114-211.ngrok-free.app/",
+        botId: "tawal-website",
+        hideWidget: false
+    })
+    // window.botpressWebChat.sendEvent({ type: 'show' })
+</script>
+
+
 <!-- You can use the [editor on GitHub](https://github.com/osamadel/osamadel.github.io/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
