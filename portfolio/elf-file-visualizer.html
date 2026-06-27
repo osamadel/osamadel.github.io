@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELF File Visualizer</title>
+<style>
+  :root {
+    /* Surfaces — warm cream canvas, no surface alternation */
+    --canvas: #fdfcfc;
+    --surface-soft: #f8f7f7;
+    --surface-card: #f1eeee;
+    --surface-dark: #201d1d;
+    --surface-dark-elev: #302c2c;
+    /* Ink ladder */
+    --ink: #201d1d;
+    --ink-deep: #0f0000;
+    --charcoal: #302c2c;
+    --body: #424245;
+    --mute: #646262;
+    --stone: #6e6e73;
+    --ash: #9a9898;
+    /* Hairlines */
+    --hairline: rgba(15, 0, 0, .12);
+    --hairline-strong: #646262;
+    /* Semantic (reserved for in-product/data states) */
+    --accent: #007aff;
+    --danger: #ff3b30;
+    /* Shape — 4px interactive, 0px containers */
+    --radius: 4px;
+    /* The brand is the font: Berkeley Mono with a long mono fallback stack */
+    --mono: "Berkeley Mono", "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  header.top {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--hairline);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    background: var(--canvas);
+  }
+  .wordmark {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 8px;
+    line-height: 1;
+    font-weight: 700;
+    color: var(--ink);
+    white-space: pre;
+    letter-spacing: 0;
+  }
+  header.top h1 { font-size: 16px; margin: 0; font-weight: 700; color: var(--ink); }
+  header.top .sub { color: var(--mute); font-size: 14px; }
+  .wrap { padding: 24px; max-width: 1100px; margin: 0 auto; }
+
+  /* Drop zone — interactive, so 4px radius; flat on surface-soft, ink focus signal */
+  #drop {
+    border: 1px dashed var(--hairline-strong);
+    border-radius: var(--radius);
+    padding: 56px 24px;
+    text-align: center;
+    color: var(--mute);
+    transition: border-color .15s, background .15s;
+    cursor: pointer;
+    background: var(--surface-soft);
+  }
+  #drop.over { border-color: var(--ink); background: var(--surface-card); color: var(--ink); }
+  #drop strong { display: block; color: var(--ink); font-weight: 700; font-size: 16px; }
+  #drop .hint { font-size: 14px; margin-top: 8px; color: var(--mute); }
+
+  #error {
+    display: none;
+    margin-top: 16px;
+    padding: 12px 16px;
+    border: 1px solid var(--danger);
+    border-radius: var(--radius);
+    color: var(--danger);
+    background: var(--surface-soft);
+    font-size: 14px;
+  }
+
+  /* File summary — surface-card pills, 4px radius (not full) */
+  #summary { display: none; margin: 16px 0 0; color: var(--mute); font-size: 14px; }
+  #summary .pill {
+    display: inline-block;
+    background: var(--surface-card);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    padding: 2px 8px;
+    margin: 0 8px 6px 0;
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 14px;
+  }
+
+  /* Section labels — bold heading over a hairline rule, 96px-spirit rhythm */
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--ink);
+    margin: 56px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  #result > .section-title:first-child { margin-top: 40px; }
+
+  /* Field cards — flat hairline rectangles on cream; the color lives in the swatch */
+  #cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+  }
+  .card {
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    border-left: 3px solid var(--c, var(--ink));
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: background .12s, border-color .12s;
+  }
+  .card:hover { background: var(--surface-soft); }
+  .card:active { background: var(--surface-card); }
+  .card.active { background: var(--surface-soft); border-color: var(--ink); }
+  .card .name { font-family: var(--mono); font-weight: 700; font-size: 14px; color: var(--ink); display:flex; align-items:center; gap:6px; }
+  .card .swatch { width: 10px; height: 10px; border-radius: 2px; background: var(--c, var(--ink)); display:inline-block; }
+  .card .val { font-size: 15px; margin-top: 6px; color: var(--charcoal); word-break: break-all; }
+  .card .meta { font-family: var(--mono); font-size: 11px; color: var(--mute); margin-top: 8px; }
+
+  /* Hex view */
+  #hexwrap { display: none; }
+  #hexnotice { color: var(--mute); font-size: 12px; margin-bottom: 8px; display:none; }
+  #hex {
+    background: var(--surface-soft);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    padding: 12px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.6;
+    overflow: auto;
+    max-height: 70vh;
+    white-space: pre;
+    color: var(--charcoal);
+  }
+  #hex .row { display: flex; gap: 16px; }
+  #hex .off { color: var(--stone); user-select: none; }
+  #hex .hex .b { padding: 0 1px; border-radius: 2px; }
+  #hex .hex .b + .b { margin-left: 3px; }
+  #hex .gap { display: inline-block; width: 8px; }
+  #hex .asc { color: var(--mute); }
+  #hex .asc .a { border-radius: 2px; }
+  .hl { color: var(--canvas) !important; font-weight: 700; }
+
+  /* Sections */
+  #secwrap { display: none; }
+  #secnote { display: none; color: var(--mute); font-size: 14px; margin-bottom: 10px; }
+  #minimap {
+    position: relative; height: 36px; background: var(--surface-card);
+    border: 1px solid var(--hairline); border-radius: var(--radius); margin-bottom: 14px; overflow: hidden;
+  }
+  #minimap .seg {
+    position: absolute; top: 0; bottom: 0; min-width: 2px; cursor: pointer;
+    opacity: .85; transition: opacity .1s; border-right: 1px solid var(--canvas);
+  }
+  #minimap .seg:hover { opacity: 1; }
+  #minimap .seg.active { opacity: 1; box-shadow: inset 0 0 0 2px var(--ink); }
+  .tablewrap { overflow: auto; border: 1px solid var(--hairline); border-radius: var(--radius); max-height: 360px; }
+  #sectable { width: 100%; border-collapse: collapse; font-size: 14px; font-family: var(--mono); }
+  #sectable th, #sectable td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--hairline); white-space: nowrap; }
+  #sectable th { position: sticky; top: 0; background: var(--surface-card); color: var(--mute); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+  #sectable tbody tr { cursor: pointer; }
+  #sectable tbody tr:hover { background: var(--surface-soft); }
+  #sectable tbody tr.active { background: var(--surface-soft); box-shadow: inset 3px 0 0 var(--ink); }
+  #sectable .mono { font-family: var(--mono); }
+  #sectable .num { color: var(--mute); }
+  .swatch2 { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 7px; vertical-align: middle; }
+  .badge { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: var(--radius); background: var(--surface-card); color: var(--mute); margin-left: 6px; border: 1px solid var(--hairline); }
+  /* The one dark surface in the system — the floating tooltip reads as the TUI moment */
+  #mmtip {
+    position: fixed; pointer-events: none; z-index: 50; display: none;
+    background: var(--surface-dark); color: var(--canvas); border: 1px solid var(--surface-dark-elev); border-radius: var(--radius);
+    padding: 6px 9px; font-family: var(--mono); font-size: 12px; white-space: nowrap;
+  }
+  #mmtip .nm { font-weight: 700; }
+  #mmtip .nm .sw { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+  #mmtip .rg { color: var(--ash); margin-top: 2px; }
+
+  /* Footer */
+  footer.bot {
+    border-top: 1px solid var(--hairline);
+    margin: 64px auto 0;
+    padding: 32px 24px;
+    max-width: 1100px;
+    color: var(--mute);
+    font-size: 14px;
+  }
+  footer.bot .marks { color: var(--ink); margin-bottom: 6px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 16px; }
+    header.top { padding: 12px 16px; }
+    .section-title { margin-top: 48px; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <pre class="wordmark" aria-hidden="true">█▀▀ █   █▀▀
+█▀▀ █   █▀▀
+▀▀▀ ▀▀▀ █  </pre>
+  <h1>ELF File Visualizer</h1>
+  <span class="sub">Drag &amp; drop an ELF binary — everything stays local in your browser.</span>
+</header>
+
+<div class="wrap">
+  <div id="drop">
+    <strong>[ + ] Drop an ELF file here</strong>
+    <div class="hint">or click to browse · ELF32 / ELF64 · little- or big-endian</div>
+  </div>
+  <input type="file" id="file" hidden>
+  <div id="error"></div>
+
+  <div id="summary"></div>
+
+  <div id="result" style="display:none">
+    <div class="section-title">ELF Header</div>
+    <div id="cards"></div>
+
+    <div id="secwrap">
+      <div class="section-title">Sections</div>
+      <div id="secnote"></div>
+      <div id="minimap" title="File layout — hover for name, click to select"></div>
+      <div id="mmtip"></div>
+      <div class="tablewrap">
+        <table id="sectable">
+          <thead><tr>
+            <th>#</th><th>Name</th><th>Type</th><th>Flags</th><th>Address</th><th>Offset</th><th>Size</th>
+          </tr></thead>
+          <tbody id="secrows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="hexwrap">
+      <div class="section-title">Hex Dump</div>
+      <div id="hexnotice"></div>
+      <div id="hex"></div>
+    </div>
+  </div>
+</div>
+
+<footer class="bot">
+  <div class="marks">[x] no upload &nbsp; [x] no tracking &nbsp; [x] parsed in-browser</div>
+  ©2026 · ELF File Visualizer · everything stays local in your browser
+</footer>
+
+<script>
+"use strict";
+
+/* ----------------------- decode tables ----------------------- */
+const ELF_CLASS = { 1: "ELF32", 2: "ELF64" };
+const ELF_DATA  = { 1: "little-endian", 2: "big-endian" };
+const ELF_OSABI = {
+  0:"System V",1:"HP-UX",2:"NetBSD",3:"Linux",4:"GNU Hurd",6:"Solaris",
+  7:"AIX",8:"IRIX",9:"FreeBSD",10:"Tru64",12:"OpenBSD",64:"ARM EABI",97:"ARM",255:"Standalone"
+};
+const ELF_TYPE = { 0:"ET_NONE",1:"ET_REL (relocatable)",2:"ET_EXEC (executable)",3:"ET_DYN (shared object)",4:"ET_CORE (core)" };
+const ELF_MACHINE = {
+  0:"None",2:"SPARC",3:"x86 (i386)",8:"MIPS",18:"SPARC v8+",20:"PowerPC",21:"PowerPC64",
+  22:"S/390",40:"ARM",42:"SuperH",43:"SPARC v9",50:"IA-64",62:"x86-64",183:"AArch64",
+  224:"AMD GPU",243:"RISC-V",247:"BPF"
+};
+
+/* ----------------------- pure parser ----------------------- */
+// parseElfHeader(arrayBuffer) -> { ok, error?, class, endianness, fields:[{name,offset,size,rawHex,decoded}] }
+function parseElfHeader(buffer) {
+  const bytes = new Uint8Array(buffer);
+  if (bytes.length < 16) return { ok: false, error: "File too small to contain an ELF identifier (need ≥ 16 bytes)." };
+  if (!(bytes[0] === 0x7f && bytes[1] === 0x45 && bytes[2] === 0x4c && bytes[3] === 0x46))
+    return { ok: false, error: "Not an ELF file (bad magic — expected 0x7F 'E' 'L' 'F')." };
+
+  const cls = bytes[4];
+  const is64 = cls === 2;
+  if (cls !== 1 && cls !== 2) return { ok: false, error: "Unknown EI_CLASS = " + cls + " (expected 1=ELF32 or 2=ELF64)." };
+
+  const data = bytes[5];
+  const le = data !== 2; // default little-endian unless explicitly big-endian
+  const headerSize = is64 ? 64 : 52;
+  if (bytes.length < headerSize)
+    return { ok: false, error: "Incomplete ELF header: file is " + bytes.length + " bytes, need " + headerSize + "." };
+
+  const dv = new DataView(buffer);
+  const read = (off, size) => {
+    if (size === 1) return BigInt(dv.getUint8(off));
+    if (size === 2) return BigInt(dv.getUint16(off, le));
+    if (size === 4) return BigInt(dv.getUint32(off, le));
+    return dv.getBigUint64(off, le);
+  };
+  const rawHex = (off, size) => {
+    const p = [];
+    for (let i = 0; i < size; i++) p.push(bytes[off + i].toString(16).padStart(2, "0"));
+    return p.join(" ");
+  };
+
+  // field layout
+  const addr = is64 ? 8 : 4;
+  let o = 24;
+  const layout = [
+    { name: "e_ident",    off: 0,  size: 16 },
+    { name: "e_type",     off: 16, size: 2  },
+    { name: "e_machine",  off: 18, size: 2  },
+    { name: "e_version",  off: 20, size: 4  },
+    { name: "e_entry",    off: (o), size: addr },
+  ];
+  o += addr;
+  layout.push({ name: "e_phoff",     off: o, size: addr }); o += addr;
+  layout.push({ name: "e_shoff",     off: o, size: addr }); o += addr;
+  layout.push({ name: "e_flags",     off: o, size: 4 }); o += 4;
+  layout.push({ name: "e_ehsize",    off: o, size: 2 }); o += 2;
+  layout.push({ name: "e_phentsize", off: o, size: 2 }); o += 2;
+  layout.push({ name: "e_phnum",     off: o, size: 2 }); o += 2;
+  layout.push({ name: "e_shentsize", off: o, size: 2 }); o += 2;
+  layout.push({ name: "e_shnum",     off: o, size: 2 }); o += 2;
+  layout.push({ name: "e_shstrndx",  off: o, size: 2 }); o += 2;
+
+  const hex = (v) => "0x" + v.toString(16);
+  const decode = (name, off, size) => {
+    if (name === "e_ident") {
+      return "\\x7fELF · " + (ELF_CLASS[cls] || ("class " + cls)) +
+             " · " + (ELF_DATA[data] || ("data " + data)) +
+             " · v" + bytes[6] +
+             " · " + (ELF_OSABI[bytes[7]] || ("OSABI " + bytes[7]));
+    }
+    const v = read(off, size);
+    const n = Number(v);
+    switch (name) {
+      case "e_type":    return (ELF_TYPE[n] || "OS/proc-specific") + " (" + n + ")";
+      case "e_machine": return (ELF_MACHINE[n] || "Unknown") + " (" + n + ")";
+      case "e_version": return n === 1 ? "1 (current)" : String(n);
+      case "e_entry":   return hex(v) + "  (entry point)";
+      case "e_phoff":   return hex(v) + "  (program header offset)";
+      case "e_shoff":   return hex(v) + "  (section header offset)";
+      case "e_flags":   return hex(v);
+      case "e_ehsize":      return n + " bytes";
+      case "e_phentsize":   return n + " bytes";
+      case "e_phnum":       return n + " entries";
+      case "e_shentsize":   return n + " bytes";
+      case "e_shnum":       return n + " entries";
+      case "e_shstrndx":    return "index " + n;
+      default:          return String(n);
+    }
+  };
+
+  const fields = layout.map(f => ({
+    name: f.name,
+    offset: f.off,
+    size: f.size,
+    rawHex: rawHex(f.off, f.size),
+    decoded: decode(f.name, f.off, f.size),
+  }));
+
+  const byName = {};
+  layout.forEach(f => { byName[f.name] = f; });
+  const num = (name) => Number(read(byName[name].off, byName[name].size));
+  const meta = {
+    is64, le,
+    shoff: num("e_shoff"),
+    shentsize: num("e_shentsize"),
+    shnum: num("e_shnum"),
+    shstrndx: num("e_shstrndx"),
+  };
+
+  return { ok: true, class: is64 ? "ELF64" : "ELF32", endianness: ELF_DATA[data] || ("data " + data), fields, meta };
+}
+
+/* ----------------------- section-header parser ----------------------- */
+const SHT = {
+  0:"NULL",1:"PROGBITS",2:"SYMTAB",3:"STRTAB",4:"RELA",5:"HASH",6:"DYNAMIC",7:"NOTE",
+  8:"NOBITS",9:"REL",10:"SHLIB",11:"DYNSYM",14:"INIT_ARRAY",15:"FINI_ARRAY",16:"PREINIT_ARRAY",
+  17:"GROUP",18:"SYMTAB_SHNDX",0x6ffffff5:"GNU_ATTRIBUTES",0x6ffffff6:"GNU_HASH",
+  0x6ffffffd:"GNU_verdef",0x6ffffffe:"GNU_verneed",0x6fffffff:"GNU_versym"
+};
+// flag bit -> letter: Write, Alloc, eXec, Merge, Strings, Info-link, Link-order, Os-nonconf, Group, Tls, Compressed
+const SHF = [[0x1,"W"],[0x2,"A"],[0x4,"X"],[0x10,"M"],[0x20,"S"],[0x40,"I"],[0x80,"L"],[0x100,"O"],[0x200,"G"],[0x400,"T"],[0x800,"C"]];
+
+// parseSectionHeaders(buffer, meta) -> { ok, error?, sections:[{index,name,type,typeName,flags,flagsStr,addr,offset,size,link,info,addralign,entsize,hasFileData}] }
+function parseSectionHeaders(buffer, meta) {
+  if (!meta || !meta.shoff) return { ok: false, error: "No section header table (e_shoff = 0)." };
+  const bytes = new Uint8Array(buffer);
+  const total = bytes.length;
+  const dv = new DataView(buffer);
+  const { le, is64 } = meta;
+  const entSize = meta.shentsize || (is64 ? 64 : 40);
+
+  const rd = (off, size) => {
+    if (off < 0 || off + size > total) throw new RangeError("read past end of file");
+    if (size === 4) return Number(dv.getUint32(off, le));
+    return Number(dv.getBigUint64(off, le));
+  };
+  const readShdr = (base) => is64 ? {
+    name: rd(base, 4), type: rd(base + 4, 4), flags: rd(base + 8, 8),
+    addr: rd(base + 16, 8), offset: rd(base + 24, 8), size: rd(base + 32, 8),
+    link: rd(base + 40, 4), info: rd(base + 44, 4), addralign: rd(base + 48, 8), entsize: rd(base + 56, 8)
+  } : {
+    name: rd(base, 4), type: rd(base + 4, 4), flags: rd(base + 8, 4),
+    addr: rd(base + 12, 4), offset: rd(base + 16, 4), size: rd(base + 20, 4),
+    link: rd(base + 24, 4), info: rd(base + 28, 4), addralign: rd(base + 32, 4), entsize: rd(base + 36, 4)
+  };
+
+  try {
+    if (meta.shoff + entSize > total) return { ok: false, error: "Section header table points past end of file." };
+    const first = readShdr(meta.shoff);
+    let count = meta.shnum;
+    let strndx = meta.shstrndx;
+    if (count === 0) count = first.size;        // extended count lives in shdr[0].sh_size
+    if (strndx === 0xffff) strndx = first.link;  // SHN_XINDEX -> shdr[0].sh_link
+    if (!count || count < 0 || count > 100000) return { ok: false, error: "Implausible section count (" + count + ")." };
+    if (meta.shoff + count * entSize > total) return { ok: false, error: "Section header table extends past end of file." };
+
+    const raw = [];
+    for (let i = 0; i < count; i++) raw.push(readShdr(meta.shoff + i * entSize));
+
+    let strBase = -1, strLen = 0;
+    if (strndx >= 0 && strndx < raw.length && raw[strndx].type !== 8) {
+      strBase = raw[strndx].offset; strLen = raw[strndx].size;
+    }
+    const nameAt = (nameOff) => {
+      if (strBase < 0) return "";
+      let p = strBase + nameOff, s = "";
+      while (p >= 0 && p < total && p < strBase + strLen && bytes[p] !== 0) { s += String.fromCharCode(bytes[p]); p++; }
+      return s;
+    };
+    const flagsStr = (f) => SHF.filter(([m]) => f & m).map(([, c]) => c).join("") || "—";
+
+    const sections = raw.map((s, i) => ({
+      index: i,
+      name: nameAt(s.name),
+      type: s.type,
+      typeName: SHT[s.type] || ("0x" + (s.type >>> 0).toString(16)),
+      flags: s.flags,
+      flagsStr: flagsStr(s.flags),
+      addr: s.addr, offset: s.offset, size: s.size,
+      link: s.link, info: s.info, addralign: s.addralign, entsize: s.entsize,
+      hasFileData: s.type !== 0 && s.type !== 8 && s.size > 0,  // not NULL/NOBITS and has bytes
+    }));
+    return { ok: true, sections };
+  } catch (e) {
+    return { ok: false, error: "Could not parse section headers: " + e.message };
+  }
+}
+
+/* ----------------------- rendering ----------------------- */
+// Data-layer palette — saturated tones chosen for contrast on the cream canvas.
+const PALETTE = [
+  "#007aff","#1a7f37","#bf8700","#cf222e","#8250df","#bc4c00",
+  "#1b7c83","#bf3989","#0969da","#2a7d2e","#953800","#6639ba",
+  "#a40e26","#218bff"
+];
+const HEX_CAP = 256 * 1024; // bytes rendered before truncation
+
+let currentBytes = null;
+let highlighted = [];   // dom nodes currently highlighted
+let activeCard = null;
+let sectionData = null; // parsed sections for the current file
+
+const $ = (id) => document.getElementById(id);
+
+const secColor = (i) => PALETTE[((i % PALETTE.length) + PALETTE.length) % PALETTE.length];
+const hx = (n) => "0x" + Number(n).toString(16);
+function hexToRgba(hex, a) {
+  const m = hex.replace("#", "");
+  return "rgba(" + parseInt(m.substr(0, 2), 16) + "," + parseInt(m.substr(2, 2), 16) + "," + parseInt(m.substr(4, 2), 16) + "," + a + ")";
+}
+function ensureStyle(id) {
+  let el = document.getElementById(id);
+  if (!el) { el = document.createElement("style"); el.id = id; document.head.appendChild(el); }
+  return el;
+}
+
+function showError(msg) {
+  const e = $("error");
+  e.textContent = msg;
+  e.style.display = "block";
+  $("result").style.display = "none";
+  $("summary").style.display = "none";
+}
+function clearError() { $("error").style.display = "none"; }
+
+function renderCards(fields) {
+  const host = $("cards");
+  host.innerHTML = "";
+  fields.forEach((f, i) => {
+    const color = PALETTE[i % PALETTE.length];
+    const card = document.createElement("div");
+    card.className = "card";
+    card.style.setProperty("--c", color);
+    card.dataset.off = f.offset;
+    card.dataset.size = f.size;
+    card.dataset.color = color;
+    card.innerHTML =
+      '<div class="name"><span class="swatch"></span>' + f.name + '</div>' +
+      '<div class="val">' + escapeHtml(f.decoded) + '</div>' +
+      '<div class="meta">offset 0x' + f.offset.toString(16) + ' · ' + f.size + ' B · ' + f.rawHex + '</div>';
+    card.addEventListener("click", () => highlightField(f.offset, f.size, color, card));
+    host.appendChild(card);
+  });
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function renderHex(bytes, sections) {
+  const total = bytes.length;
+  const len = Math.min(total, HEX_CAP);
+  const notice = $("hexnotice");
+  if (total > len) {
+    notice.style.display = "block";
+    notice.textContent = "Showing first " + len.toLocaleString() + " of " +
+      total.toLocaleString() + " bytes (output truncated for performance). All header fields are within the first 64 bytes.";
+  } else {
+    notice.style.display = "none";
+  }
+
+  // map each rendered byte offset -> owning section index (-1 = none)
+  const secOf = new Int32Array(len).fill(-1);
+  if (sections) {
+    for (const s of sections) {
+      if (!s.hasFileData) continue;
+      const a = Math.max(0, s.offset), b = Math.min(len, s.offset + s.size);
+      for (let p = a; p < b; p++) secOf[p] = s.index;
+    }
+  }
+
+  const rows = [];
+  for (let off = 0; off < len; off += 16) {
+    let h = "";
+    let a = "";
+    for (let i = 0; i < 16; i++) {
+      const p = off + i;
+      if (i === 8) h += '<span class="gap"></span>';
+      if (p < len) {
+        const v = bytes[p];
+        const sec = secOf[p] >= 0 ? ' data-sec="' + secOf[p] + '"' : "";
+        h += '<span class="b" data-off="' + p + '"' + sec + ">" + v.toString(16).padStart(2, "0") + "</span>";
+        const c = (v >= 32 && v <= 126) ? String.fromCharCode(v) : ".";
+        a += '<span class="a" data-off="' + p + '"' + sec + ">" + escapeHtml(c) + "</span>";
+      } else {
+        h += '<span class="b">&nbsp;&nbsp;</span>';
+      }
+    }
+    rows.push('<div class="row"><span class="off">' +
+      off.toString(16).padStart(8, "0") + '</span><span class="hex">' + h +
+      '</span><span class="asc">' + a + "</span></div>");
+  }
+  $("hex").innerHTML = rows.join("");
+  buildSectionStyles(sections);
+}
+
+// One CSS rule per section tints all its bytes at once — no per-node JS on large files.
+function buildSectionStyles(sections) {
+  const el = ensureStyle("secTint");
+  let css = "";
+  if (sections) for (const s of sections) {
+    if (!s.hasFileData) continue;
+    css += '#hex [data-sec="' + s.index + '"]{background:' + hexToRgba(secColor(s.index), 0.16) + ";}";
+  }
+  el.textContent = css;
+  ensureStyle("secSel").textContent = "";  // clear any selection highlight
+}
+
+function renderSections(sections, total) {
+  const mm = $("minimap");
+  mm.innerHTML = "";
+  for (const s of sections) {
+    if (!s.hasFileData) continue;
+    const seg = document.createElement("div");
+    seg.className = "seg";
+    seg.style.left = (s.offset / total) * 100 + "%";
+    seg.style.width = Math.max((s.size / total) * 100, 0.3) + "%";
+    seg.style.background = secColor(s.index);
+    seg.dataset.sec = s.index;
+    seg.addEventListener("mouseenter", (e) => showMinimapTip(e, s));
+    seg.addEventListener("mousemove", (e) => showMinimapTip(e, s));
+    seg.addEventListener("mouseleave", hideMinimapTip);
+    seg.addEventListener("click", () => selectSection(s.index));
+    mm.appendChild(seg);
+  }
+
+  const tb = $("secrows");
+  tb.innerHTML = "";
+  for (const s of sections) {
+    const tr = document.createElement("tr");
+    tr.dataset.sec = s.index;
+    const sw = s.hasFileData ? '<span class="swatch2" style="background:' + secColor(s.index) + '"></span>' : '<span class="swatch2" style="background:transparent;border:1px solid var(--border)"></span>';
+    tr.innerHTML =
+      '<td class="num">' + s.index + "</td>" +
+      "<td>" + sw + escapeHtml(s.name) + "</td>" +
+      "<td>" + escapeHtml(s.typeName) + "</td>" +
+      '<td class="mono">' + s.flagsStr + "</td>" +
+      '<td class="mono">' + hx(s.addr) + "</td>" +
+      '<td class="mono">' + hx(s.offset) + "</td>" +
+      '<td class="mono">' + s.size.toLocaleString() + (s.type === 8 ? ' <span class="badge">no file data</span>' : "") + "</td>";
+    tr.addEventListener("click", () => selectSection(s.index));
+    tb.appendChild(tr);
+  }
+}
+
+function selectSection(idx) {
+  clearHighlight();
+  if (activeCard) { activeCard.classList.remove("active"); activeCard = null; }
+  document.querySelectorAll(".seg.active, #secrows tr.active").forEach(n => n.classList.remove("active"));
+
+  const seg = document.querySelector('.seg[data-sec="' + idx + '"]');
+  const row = document.querySelector('#secrows tr[data-sec="' + idx + '"]');
+  if (seg) seg.classList.add("active");
+  if (row) { row.classList.add("active"); row.scrollIntoView({ block: "nearest" }); }
+
+  ensureStyle("secSel").textContent =
+    '#hex [data-sec="' + idx + '"]{background:' + hexToRgba(secColor(idx), 0.55) + " !important;}";
+
+  const s = sectionData && sectionData.find(x => x.index === idx);
+  const renderedLen = Math.min(currentBytes.length, HEX_CAP);
+  if (s && s.hasFileData && s.offset < renderedLen) {
+    const node = $("hex").querySelector('[data-off="' + s.offset + '"]');
+    if (node) node.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+}
+
+function showMinimapTip(e, s) {
+  const tip = $("mmtip");
+  tip.innerHTML =
+    '<div class="nm"><span class="sw" style="background:' + secColor(s.index) + '"></span>' +
+    escapeHtml(s.name || ("section " + s.index)) + " · " + escapeHtml(s.typeName) + "</div>" +
+    '<div class="rg">' + hx(s.offset) + "–" + hx(s.offset + s.size) + " · " + s.size.toLocaleString() + " B</div>";
+  tip.style.display = "block";
+  // position near cursor, clamped to the viewport
+  const pad = 12, w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = e.clientX + pad, y = e.clientY + pad;
+  if (x + w + 4 > window.innerWidth) x = e.clientX - w - pad;
+  if (y + h + 4 > window.innerHeight) y = e.clientY - h - pad;
+  tip.style.left = Math.max(4, x) + "px";
+  tip.style.top = Math.max(4, y) + "px";
+}
+function hideMinimapTip() { $("mmtip").style.display = "none"; }
+
+function clearHighlight() {
+  highlighted.forEach(n => { n.classList.remove("hl"); n.style.background = ""; });
+  highlighted = [];
+}
+
+function highlightField(offset, size, color, card) {
+  clearHighlight();
+  if (activeCard) activeCard.classList.remove("active");
+  card.classList.add("active");
+  activeCard = card;
+  // clear any section selection (header fields and sections are different layers)
+  ensureStyle("secSel").textContent = "";
+  document.querySelectorAll(".seg.active, #secrows tr.active").forEach(n => n.classList.remove("active"));
+
+  const hexEl = $("hex");
+  if (offset >= Math.min(currentBytes.length, HEX_CAP)) return; // beyond rendered region (won't happen for header)
+
+  let first = null;
+  for (let p = offset; p < offset + size; p++) {
+    hexEl.querySelectorAll('[data-off="' + p + '"]').forEach(n => {
+      n.classList.add("hl");
+      n.style.background = color;
+      highlighted.push(n);
+      if (!first) first = n;
+    });
+  }
+  if (first) first.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+/* ----------------------- file handling ----------------------- */
+function handleFile(file) {
+  clearError();
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const buf = reader.result;
+      const parsed = parseElfHeader(buf);
+      if (!parsed.ok) { showError(parsed.error); return; }
+
+      currentBytes = new Uint8Array(buf);
+      highlighted = [];
+      activeCard = null;
+
+      const secParsed = parseSectionHeaders(buf, parsed.meta);
+      sectionData = secParsed.ok ? secParsed.sections : null;
+
+      const sum = $("summary");
+      sum.style.display = "block";
+      sum.innerHTML =
+        '<span class="pill">' + escapeHtml(file.name) + "</span>" +
+        '<span class="pill">' + currentBytes.length.toLocaleString() + " bytes</span>" +
+        '<span class="pill">' + parsed.class + "</span>" +
+        '<span class="pill">' + parsed.endianness + "</span>" +
+        (sectionData ? '<span class="pill">' + sectionData.length + " sections</span>" : "");
+
+      renderCards(parsed.fields);
+      renderHex(currentBytes, sectionData);
+
+      const secNote = $("secnote");
+      if (sectionData && sectionData.length) {
+        secNote.style.display = "none";
+        renderSections(sectionData, currentBytes.length);
+      } else {
+        secNote.style.display = "block";
+        secNote.textContent = (secParsed.error || "No section headers found.") + " (ELF header and hex dump are still shown below.)";
+        $("minimap").innerHTML = "";
+        $("secrows").innerHTML = "";
+      }
+
+      $("result").style.display = "block";
+      $("secwrap").style.display = "block";
+      $("hexwrap").style.display = "block";
+    } catch (err) {
+      showError("Failed to parse file: " + err.message);
+    }
+  };
+  reader.onerror = () => showError("Could not read the file.");
+  reader.readAsArrayBuffer(file);
+}
+
+/* ----------------------- wiring ----------------------- */
+const drop = $("drop");
+const fileInput = $("file");
+
+drop.addEventListener("click", () => fileInput.click());
+fileInput.addEventListener("change", () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+
+["dragenter", "dragover"].forEach(ev =>
+  drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach(ev =>
+  drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => {
+  const f = e.dataTransfer.files[0];
+  if (f) handleFile(f);
+});
+// allow dropping anywhere without the browser navigating away
+window.addEventListener("dragover", e => e.preventDefault());
+window.addEventListener("drop", e => e.preventDefault());
+
+/* ----------------------- self-tests (?test) ----------------------- */
+function buildElf(is64, le, machine, type) {
+  const size = is64 ? 64 : 52;
+  const buf = new ArrayBuffer(size);
+  const b = new Uint8Array(buf);
+  const dv = new DataView(buf);
+  b[0] = 0x7f; b[1] = 0x45; b[2] = 0x4c; b[3] = 0x46;
+  b[4] = is64 ? 2 : 1;
+  b[5] = le ? 1 : 2;
+  b[6] = 1; b[7] = 0; // version, OSABI=System V
+  dv.setUint16(16, type, le);     // e_type
+  dv.setUint16(18, machine, le);  // e_machine
+  dv.setUint32(20, 1, le);        // e_version
+  return buf;
+}
+// ELF64 LE with a string table + .text(PROGBITS A|X) + .bss(NOBITS) + .shstrtab(STRTAB)
+function buildElfWithSections() {
+  const total = 512, buf = new ArrayBuffer(total), b = new Uint8Array(buf), dv = new DataView(buf);
+  b.set([0x7f, 0x45, 0x4c, 0x46, 2, 1, 1, 0]);
+  dv.setUint16(16, 2, true); dv.setUint16(18, 0x3e, true); dv.setUint32(20, 1, true);
+  const shoff = 128, ent = 64, shnum = 4, shstrndx = 3;
+  dv.setBigUint64(40, BigInt(shoff), true);  // e_shoff
+  dv.setUint16(58, ent, true);               // e_shentsize
+  dv.setUint16(60, shnum, true);             // e_shnum
+  dv.setUint16(62, shstrndx, true);          // e_shstrndx
+  // string table at offset 64: "\0.text\0.bss\0.shstrtab\0"
+  const str = "\0.text\0.bss\0.shstrtab\0";
+  for (let i = 0; i < str.length; i++) b[64 + i] = str.charCodeAt(i);
+  const nameOff = { text: 1, bss: 7, shstrtab: 12 };
+  const shdr = (i, fields) => {
+    const o = shoff + i * ent;
+    dv.setUint32(o, fields.name || 0, true);
+    dv.setUint32(o + 4, fields.type || 0, true);
+    dv.setBigUint64(o + 8, BigInt(fields.flags || 0), true);
+    dv.setBigUint64(o + 16, BigInt(fields.addr || 0), true);
+    dv.setBigUint64(o + 24, BigInt(fields.offset || 0), true);
+    dv.setBigUint64(o + 32, BigInt(fields.size || 0), true);
+  };
+  shdr(0, {});                                                              // NULL
+  shdr(1, { name: nameOff.text, type: 1, flags: 0x6, addr: 0x401000, offset: 0xc0, size: 32 }); // .text A|X
+  shdr(2, { name: nameOff.bss, type: 8, flags: 0x3, addr: 0x404000, offset: 0xe0, size: 64 });  // .bss NOBITS
+  shdr(3, { name: nameOff.shstrtab, type: 3, offset: 64, size: str.length });                    // .shstrtab
+  return buf;
+}
+function runTests() {
+  let pass = 0, fail = 0;
+  const check = (label, cond) => { cond ? (pass++, console.log("✓ " + label)) : (fail++, console.error("✗ " + label)); };
+
+  const a = parseElfHeader(buildElf(true, true, 0x3e, 2));
+  check("ELF64 LE parses", a.ok);
+  check("ELF64 class label", a.ok && a.class === "ELF64");
+  check("e_machine decodes x86-64", a.ok && a.fields.find(f => f.name === "e_machine").decoded.includes("x86-64"));
+  check("e_type decodes EXEC", a.ok && a.fields.find(f => f.name === "e_type").decoded.includes("ET_EXEC"));
+  check("e_entry offset is 24 (64-bit)", a.ok && a.fields.find(f => f.name === "e_entry").offset === 24 && a.fields.find(f => f.name === "e_entry").size === 8);
+
+  const b32 = parseElfHeader(buildElf(false, true, 3, 2));
+  check("ELF32 LE parses", b32.ok);
+  check("ELF32 class label", b32.ok && b32.class === "ELF32");
+  check("ELF32 e_entry size is 4", b32.ok && b32.fields.find(f => f.name === "e_entry").size === 4);
+  check("ELF32 e_phoff offset is 28", b32.ok && b32.fields.find(f => f.name === "e_phoff").offset === 28);
+
+  const be = parseElfHeader(buildElf(true, false, 0x3e, 2)); // big-endian
+  check("big-endian decodes e_machine", be.ok && be.fields.find(f => f.name === "e_machine").decoded.includes("x86-64"));
+  check("big-endian endianness label", be.ok && be.endianness === "big-endian");
+
+  const bad = parseElfHeader(new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]).buffer);
+  check("bad magic rejected", !bad.ok && /bad magic/i.test(bad.error));
+
+  const tiny = parseElfHeader(new Uint8Array([0x7f, 0x45]).buffer);
+  check("too-small rejected", !tiny.ok);
+
+  const short = parseElfHeader(buildElf(true, true, 0x3e, 2).slice(0, 40));
+  check("incomplete header rejected", !short.ok && /incomplete/i.test(short.error));
+
+  // --- section headers ---
+  const sbuf = buildElfWithSections();
+  const sh = parseSectionHeaders(sbuf, parseElfHeader(sbuf).meta);
+  check("sections parse", sh.ok);
+  check("section count is 4", sh.ok && sh.sections.length === 4);
+  check("name resolves (.text)", sh.ok && sh.sections[1].name === ".text");
+  check("name resolves (.shstrtab)", sh.ok && sh.sections[3].name === ".shstrtab");
+  check(".text type PROGBITS", sh.ok && sh.sections[1].typeName === "PROGBITS");
+  check(".text flags A+X", sh.ok && sh.sections[1].flagsStr.includes("A") && sh.sections[1].flagsStr.includes("X"));
+  check(".text has file data", sh.ok && sh.sections[1].hasFileData === true);
+  check("NULL section has no file data", sh.ok && sh.sections[0].hasFileData === false);
+  check(".bss is NOBITS with no file data", sh.ok && sh.sections[2].typeName === "NOBITS" && sh.sections[2].hasFileData === false);
+
+  const noSec = parseSectionHeaders(buildElf(true, true, 0x3e, 2), parseElfHeader(buildElf(true, true, 0x3e, 2)).meta);
+  check("no section table rejected (e_shoff=0)", !noSec.ok);
+
+  const badMeta = { is64: true, le: true, shoff: 100000, shentsize: 64, shnum: 4, shstrndx: 3 };
+  const oob = parseSectionHeaders(sbuf, badMeta);
+  check("section table past EOF rejected", !oob.ok);
+
+  console.log("\nELF visualizer self-tests: " + pass + " passed, " + fail + " failed.");
+  return { pass, fail };
+}
+if (new URLSearchParams(location.search).has("test")) runTests();
+</script>
+</body>
+</html>

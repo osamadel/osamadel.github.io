@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zakat Calculator · حاسبة الزكاة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    /* Binance design system — dark canvas, single yellow accent */
+    --bg:#0b0e11;          /* canvas-dark */
+    --panel:#1e2329;       /* surface-card-dark */
+    --panel2:#2b3139;      /* surface-elevated-dark */
+    --line:#2b3139;        /* hairline-on-dark */
+    --txt:#eaecef;         /* body on dark */
+    --muted:#707a8a;       /* muted */
+    --primary:#FCD535;     /* Binance yellow — primary CTAs, brand */
+    --primary-active:#f0b90b;
+    --on-primary:#181a20;  /* black text on yellow */
+    --accent:#0ecb81;      /* trading-up green — Zakat figures & due markers */
+    --accent2:#3b82f6;     /* info blue — today marker, focus, segmented active */
+    --gold:#FCD535;        /* gold asset (yellow) */
+    --cash:#3b82f6;        /* cash asset (info blue) */
+    --warn:#f6465d;        /* trading-down red — missing price / alerts */
+    --row:#171b20;         /* row surface, one step off canvas */
+    --shadow:0 8px 24px rgba(0,0,0,.45);
+    --ring:0 0 0 2px rgba(59,130,246,.5);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg);
+    color:var(--txt); font:14px/1.5 "Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  }
+  :focus-visible{outline:none; box-shadow:var(--ring)}
+  /* BinancePlex-substitute: tabular numbers for money/prices */
+  .totals div span,.labels .lbl .v,table.prices input,
+  .summary td:nth-child(1),.summary td:nth-child(2),
+  .summary td:nth-child(4),.summary td:nth-child(5),
+  .summary td:nth-child(6),.summary td:nth-child(7){
+    font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-variant-numeric:tabular-nums;
+  }
+  header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 22px; border-bottom:1px solid var(--line); background:var(--bg);
+  }
+  header h1{font-size:18px; margin:0; font-weight:700; letter-spacing:-.2px}
+  header h1 .ar{color:var(--muted); font-weight:500; margin-inline-start:8px; font-size:15px}
+  .icon-btn{
+    background:var(--panel); border:1px solid var(--line); color:var(--txt);
+    width:40px; height:40px; border-radius:8px; cursor:pointer; font-size:18px;
+    display:grid; place-items:center;
+  }
+  .icon-btn:hover{border-color:var(--accent2)}
+  .toolbar{
+    display:flex; align-items:center; gap:14px; padding:12px 22px; flex-wrap:wrap;
+    border-bottom:1px solid var(--line);
+  }
+  button.primary,button.ghost{
+    border-radius:8px; padding:9px 16px; cursor:pointer; font-weight:600; font-size:13px;
+    border:1px solid var(--line);
+  }
+  button.primary{background:var(--primary); color:var(--on-primary); border-color:transparent}
+  button.primary:hover{background:var(--primary-active)}
+  button.ghost{background:var(--panel); color:var(--txt)}
+  button.ghost:hover{border-color:var(--accent2)}
+  button:disabled{opacity:.45; cursor:not-allowed}
+  button.primary:disabled:hover{background:var(--primary)}
+  .zoom{display:flex; align-items:center; gap:8px; color:var(--muted); font-size:12px}
+  .zoom input[type=range]{accent-color:var(--accent2)}
+  .legend{display:flex; gap:16px; margin-inline-start:auto; color:var(--muted); font-size:12px; flex-wrap:wrap}
+  .legend span{display:inline-flex; align-items:center; gap:6px}
+  .dot{width:11px;height:11px;border-radius:50%;display:inline-block}
+  .dot.gold{background:var(--gold)} .dot.cash{background:var(--cash)}
+  .diam{width:11px;height:11px;display:inline-block;transform:rotate(45deg)}
+  .diam.z{background:var(--accent)} .diam.n{background:var(--muted)} .diam.w{background:var(--warn)}
+
+  .gantt{display:flex; margin:18px 22px; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--panel)}
+  .labels{flex:0 0 200px; background:var(--row); border-inline-end:1px solid var(--line)}
+  .labels .axis-pad{height:var(--axis-h); border-bottom:1px solid var(--line)}
+  .labels .lbl{
+    height:var(--row-h); display:flex; flex-direction:column; justify-content:center;
+    padding:0 14px; border-bottom:1px solid var(--line); overflow:hidden;
+  }
+  .labels .lbl .t{font-weight:650; white-space:nowrap; text-overflow:ellipsis; overflow:hidden}
+  .labels .lbl .s{color:var(--muted); font-size:11.5px; white-space:nowrap; text-overflow:ellipsis; overflow:hidden}
+  .labels .lbl .v{color:var(--accent); font-weight:650; font-size:12.5px; white-space:nowrap; text-overflow:ellipsis; overflow:hidden}
+  .labels .lbl .v .setp{color:var(--warn); font-weight:500}
+  .labels .lbl .del{align-self:flex-start; margin-top:2px; color:var(--warn); cursor:pointer; font-size:11px; opacity:.0}
+  .labels .lbl:hover .del{opacity:.9}
+  .scroll{flex:1 1 auto; overflow-x:auto; overflow-y:hidden}
+  .scroll svg{display:block}
+  .empty{padding:40px; text-align:center; color:var(--muted)}
+
+  .summary{margin:0 22px 26px; border:1px solid var(--line); border-radius:12px; background:var(--panel); overflow:hidden}
+  .summary h2{margin:0; padding:14px 18px; font-size:15px; border-bottom:1px solid var(--line)}
+  .summary table{width:100%; border-collapse:collapse; font-size:13px}
+  .summary th,.summary td{padding:9px 14px; text-align:right; border-bottom:1px solid var(--line)}
+  .summary th:first-child,.summary td:first-child{text-align:left}
+  .summary thead th{color:var(--muted); font-weight:600; position:sticky; top:0; background:var(--panel2)}
+  .summary tr:hover td{background:var(--panel2)}
+  .summary .muted{color:var(--muted)}
+  .summary .zak{color:var(--accent); font-weight:650}
+  .summary .flag{color:var(--warn); font-size:12px}
+
+  .kpis{display:flex; gap:16px; margin:18px 22px 20px; flex-wrap:wrap}
+  .kpi-card{
+    flex:1; min-width:160px; background:var(--panel); border:1px solid var(--line);
+    border-radius:12px; padding:16px 20px; display:flex; flex-direction:column; gap:4px;
+    box-shadow:0 4px 12px rgba(0,0,0,.1);
+  }
+  .kpi-card b{color:var(--muted); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.5px}
+  .kpi-card span{font-size:20px; font-weight:700; font-family:"IBM Plex Mono",monospace}
+  .kpi-card span.zak{color:var(--accent)}
+  .kpi-card span.paid{color:var(--warn)}
+
+  .totals{padding:14px 18px; display:flex; gap:28px; flex-wrap:wrap; border-top:1px solid var(--line); background:var(--row)}
+  .totals div b{display:block; color:var(--muted); font-weight:500; font-size:12px}
+  .totals div span{font-size:18px; font-weight:700}
+
+  /* dialogs */
+  dialog{
+    border:1px solid var(--line); background:var(--panel); color:var(--txt);
+    border-radius:12px; padding:0; width:min(560px,94vw); box-shadow:var(--shadow);
+  }
+  dialog::backdrop{background:rgba(11,14,17,.6); backdrop-filter:blur(2px)}
+  .dlg-head{display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--line)}
+  .dlg-head h3{margin:0; font-size:16px}
+  .dlg-body{padding:18px 20px; max-height:64vh; overflow:auto}
+  .dlg-foot{display:flex; justify-content:flex-end; gap:10px; padding:14px 20px; border-top:1px solid var(--line)}
+  .field{margin-bottom:14px}
+  .field label{display:block; margin-bottom:6px; color:var(--muted); font-size:12.5px}
+  .field input,.field select{
+    width:100%; padding:10px 12px; background:var(--panel2); border:1px solid var(--line);
+    border-radius:8px; color:var(--txt); font-size:14px;
+  }
+  .row2{display:flex; gap:12px} .row2 .field{flex:1}
+  .seg{display:inline-flex; border:1px solid var(--line); border-radius:8px; overflow:hidden}
+  .seg button{background:var(--panel2); color:var(--muted); border:0; padding:8px 14px; cursor:pointer; font-size:13px}
+  .seg button.on{background:var(--accent2); color:#fff}
+  .hint{color:var(--muted); font-size:12px; margin-top:4px}
+  .err{color:var(--warn); font-size:12.5px; min-height:16px; margin-top:2px}
+  .toggle{display:flex; align-items:center; gap:10px}
+  .switch{position:relative; width:46px; height:26px}
+  .switch input{opacity:0; width:0; height:0}
+  .slider{position:absolute; inset:0; background:var(--line); border-radius:20px; cursor:pointer; transition:.15s}
+  .slider:before{content:""; position:absolute; width:20px; height:20px; left:3px; top:3px; background:#fff; border-radius:50%; transition:.15s}
+  .switch input:checked + .slider{background:var(--accent)}
+  .switch input:checked + .slider:before{transform:translateX(20px)}
+  table.prices{width:100%; border-collapse:collapse; font-size:13px}
+  table.prices th,table.prices td{padding:7px 8px; border-bottom:1px solid var(--line); text-align:left}
+  table.prices th{color:var(--muted); font-weight:600}
+  table.prices input{width:120px; padding:6px 8px; background:var(--panel2); border:1px solid var(--line); border-radius:8px; color:var(--txt)}
+  table.prices .src{color:var(--muted); font-size:11px}
+
+  #tooltip{
+    position:fixed; z-index:50; pointer-events:none; background:var(--panel2);
+    border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:12.5px;
+    box-shadow:var(--shadow); max-width:280px; display:none;
+  }
+  #tooltip b{color:var(--accent2)} #tooltip .z{color:var(--accent)} #tooltip .w{color:var(--warn)}
+  #tooltip .k{color:var(--muted)}
+  .axis-line{stroke:var(--line)} .axis-txt{fill:var(--muted); font-size:11px}
+  .row-base{stroke:var(--line)} .asset-line{stroke-width:3; fill:none}
+</style>
+</head>
+<body>
+<header>
+  <h1>Zakat Calculator <span class="ar">حاسبة الزكاة</span></h1>
+  <button class="icon-btn" id="settingsBtn" title="Settings">⚙️</button>
+</header>
+
+<div class="toolbar">
+  <button class="ghost" id="addBtn">＋ Add Asset</button>
+  <button class="primary" id="calcBtn">Calculate Zakat</button>
+  <button class="primary" id="payBtn" disabled title="Run Calculate first to see what's due">Pay Zakat</button>
+  <button class="ghost" id="exportBtn" title="Download a .json snapshot of your data">⬇ Export</button>
+  <button class="ghost" id="importBtn" title="Restore data from a .json snapshot">⬆ Import</button>
+  <input type="file" id="importFile" accept="application/json,.json" style="display:none" />
+  <div class="zoom">Zoom
+    <input type="range" id="zoom" min="1" max="100" value="22" />
+  </div>
+  <div class="legend">
+    <span><i class="dot gold"></i>Gold</span>
+    <span><i class="dot cash"></i>Cash</span>
+    <span><i class="diam n"></i>Anniversary</span>
+    <span><i class="diam z"></i>Zakat due</span>
+    <span title="Deduction from holding"><i class="diam" style="background:#f59e0b"></i>Reduction</span>
+    <span><i class="diam w"></i>Missing price</span>
+    <span><i class="diam w"></i>Paid / Sold</span>
+  </div>
+</div>
+
+<div class="kpis" id="kpiCards" style="display:none"></div>
+
+<div class="gantt" id="gantt" style="--axis-h:46px;--row-h:72px">
+  <div class="labels" id="labels"><div class="axis-pad"></div></div>
+  <div class="scroll" id="scroll"><svg id="svg"></svg></div>
+</div>
+
+<div class="summary" id="summary" style="display:none">
+  <h2>Zakat Summary — chronological (per-asset haul, Hijri)</h2>
+  <div style="max-height:340px;overflow:auto">
+    <table>
+      <thead><tr>
+        <th>Hijri date</th><th>Gregorian</th><th>Maturing asset(s)</th>
+        <th>Total before</th><th>Zakatable base</th><th>Zakat (2.5%)</th><th>Total after</th><th>Note</th>
+      </tr></thead>
+      <tbody id="sumBody"></tbody>
+    </table>
+  </div>
+  <div class="totals" id="totals"></div>
+</div>
+
+<div id="tooltip"></div>
+
+<!-- Add Asset dialog -->
+<dialog id="assetDlg">
+  <form method="dialog" id="assetForm">
+    <div class="dlg-head"><h3>Add Asset</h3><button class="icon-btn" value="cancel" formnovalidate>✕</button></div>
+    <div class="dlg-body">
+      <div class="field">
+        <label>Asset type</label>
+        <select id="fType"><option value="cash">Cash</option><option value="gold">Gold</option></select>
+      </div>
+      <div class="field" id="currencyWrap">
+        <label>Currency</label>
+        <select id="fCurrency"><option value="EGP">EGP</option><option value="USD">USD</option><option value="SAR">SAR</option></select>
+      </div>
+      <div class="row2">
+        <div class="field" id="caratWrap" style="display:none">
+          <label>Carat</label>
+          <select id="fCarat"><option>24</option><option>22</option><option>21</option><option>18</option></select>
+        </div>
+        <div class="field">
+          <label id="amtLabel">Amount (EGP)</label>
+          <input id="fAmount" type="number" step="any" min="0" placeholder="e.g. 10000" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Acquisition date</label>
+        <div class="seg" id="calSeg">
+          <button type="button" data-cal="greg" class="on">Gregorian</button>
+          <button type="button" data-cal="hijri">Hijri</button>
+        </div>
+        <div class="row2" style="margin-top:8px">
+          <div class="field" style="margin:0"><label>Year</label><input id="dY" type="number" /></div>
+          <div class="field" style="margin:0"><label>Month</label><input id="dM" type="number" min="1" max="12" /></div>
+          <div class="field" style="margin:0"><label>Day</label><input id="dD" type="number" min="1" max="31" /></div>
+        </div>
+        <div class="hint" id="dPreview"></div>
+      </div>
+      <div class="err" id="assetErr"></div>
+    </div>
+    <div class="dlg-foot">
+      <button class="ghost" value="cancel" formnovalidate>Cancel</button>
+      <button class="primary" value="ok" id="assetSave">Add asset</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Settings dialog -->
+<dialog id="settingsDlg">
+  <div class="dlg-head"><h3>Settings</h3><button class="icon-btn" id="settingsClose">✕</button></div>
+  <div class="dlg-body">
+    <div class="field toggle">
+      <label class="switch"><input type="checkbox" id="nisabToggle" checked /><span class="slider"></span></label>
+      <div><b>Apply Nisab threshold</b><div class="hint">Zakat is due only when total wealth ≥ value of 85 g of 24k gold that year.</div></div>
+    </div>
+    <h3 style="font-size:14px;margin:18px 0 8px">Exchange rates — EGP per unit (today)</h3>
+    <div class="hint" style="margin-bottom:10px">Used to convert USD and SAR cash holdings to EGP for Zakat totals.</div>
+    <div class="row2">
+      <div class="field"><label>1 USD = EGP</label><input id="fxUsd" type="number" step="any" min="0" placeholder="e.g. 50" /></div>
+      <div class="field"><label>1 SAR = EGP</label><input id="fxSar" type="number" step="any" min="0" placeholder="e.g. 12.5" /></div>
+    </div>
+    <h3 style="font-size:14px;margin:18px 0 8px">Gold price — EGP per gram (24k)</h3>
+    <div class="hint" style="margin-bottom:10px">Rows are auto-generated for every Hijri anniversary in your chart. Fill each year's price; values are used to convert gold to cash. Other carats use <code>price × carat ÷ 24</code>.</div>
+    <table class="prices"><thead><tr><th>Hijri date</th><th>Gregorian</th><th>EGP / gram (24k)</th></tr></thead>
+      <tbody id="priceBody"></tbody>
+    </table>
+    <div class="empty" id="priceEmpty" style="padding:18px">Add an asset first — anniversary dates will appear here to price.</div>
+  </div>
+  <div class="dlg-foot"><button class="primary" id="settingsSave">Done</button></div>
+</dialog>
+
+<!-- Pay Zakat dialog -->
+<dialog id="payDlg">
+  <div class="dlg-head"><h3>Pay Zakat</h3><button class="icon-btn" id="payClose">✕</button></div>
+  <div class="dlg-body">
+    <div class="field">
+      <label>Outstanding Zakat due</label>
+      <div id="payAmount" style="font-size:26px;font-weight:700;color:var(--accent)">—</div>
+      <div class="hint" id="payDate"></div>
+    </div>
+    <div class="field">
+      <label>Mark assets sold / no longer held after today (optional)</label>
+      <div id="paySoldList"></div>
+      <div class="hint">Ticked assets leave the future Zakat pool but keep their full history (a red marker shows the date). If you liquidated one to cash, add a new Cash asset for the proceeds.</div>
+    </div>
+  </div>
+  <div class="dlg-foot">
+    <button class="ghost" id="payCancel">Cancel</button>
+    <button class="primary" id="payConfirm">Confirm payment</button>
+  </div>
+</dialog>
+
+<!-- Reduce Asset dialog -->
+<dialog id="reduceDlg">
+  <div class="dlg-head"><h3>Reduce Asset Holding</h3><button class="icon-btn" id="reduceClose">✕</button></div>
+  <div class="dlg-body">
+    <div class="field">
+      <label>Asset</label>
+      <div id="redAssetSummary" style="font-weight:600"></div>
+      <div class="hint" id="redAssetHold"></div>
+    </div>
+    <div class="field">
+      <label id="redAmtLabel">Deduction amount</label>
+      <input id="fRedAmount" type="number" step="any" min="0" />
+      <div class="err" id="redErr"></div>
+    </div>
+    <div class="hint">This records spending or partial liquidation today. Historical Zakat anniversaries remain unchanged; future hauls will use the reduced balance.</div>
+  </div>
+  <div class="dlg-foot">
+    <button class="ghost" id="reduceCancel">Cancel</button>
+    <button class="primary" id="reduceConfirm">Confirm reduction</button>
+  </div>
+</dialog>
+
+<script>
+/* ============================================================
+   Zakat Gantt Calculator — single-file, offline, Hijri-based.
+   Calendar: Intl 'islamic-umalqura'. All dates handled as UTC midnights.
+   ============================================================ */
+
+/* ---------- Hijri date module ---------- */
+const DAY = 86400000;
+const hijriFmt = new Intl.DateTimeFormat('en-US-u-ca-islamic-umalqura',
+  {timeZone:'UTC', day:'numeric', month:'numeric', year:'numeric'});
+
+function gregToHijri(date){           // Date -> {y,m,d}
+  let y,m,d;
+  for(const p of hijriFmt.formatToParts(date)){
+    if(p.type==='year') y=+p.value;
+    if(p.type==='month') m=+p.value;
+    if(p.type==='day') d=+p.value;
+  }
+  return {y,m,d};
+}
+function cmpH(h,ty,tm,td){ return (h.y-ty)||(h.m-tm)||(h.d-td); }
+
+// Hijri {y,m,d} -> Date (UTC midnight). Binary search over day index.
+function hijriToGreg(hy,hm,hd){
+  let lo = Math.floor(Date.UTC(622,6,17)/DAY);          // safe lower bound (~1 AH)
+  let hi = Math.floor(Date.UTC(622+hy+1,0,1)/DAY);      // safe upper bound
+  while(lo<hi){
+    const mid = Math.floor((lo+hi)/2);
+    if(cmpH(gregToHijri(new Date(mid*DAY)), hy,hm,hd) < 0) lo=mid+1; else hi=mid;
+  }
+  return new Date(lo*DAY);
+}
+const pad2 = n => String(n).padStart(2,'0');
+const hKey  = h => `${h.y}-${pad2(h.m)}-${pad2(h.d)}`;          // canonical hijri key
+const hLabel= h => `${h.y}-${pad2(h.m)}-${pad2(h.d)} AH`;
+function gLabel(ms){ const d=new Date(ms); return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`; }
+function utcMs(y,m,d){ return Date.UTC(y,m-1,d); }
+function todayMs(){ const n=new Date(); return Date.UTC(n.getFullYear(),n.getMonth(),n.getDate()); }
+
+// Hijri anniversaries (n=1..) of a start, up to & including today.
+function anniversaries(startHijri, endMs){
+  const out=[];
+  for(let n=1;;n++){
+    const h={y:startHijri.y+n, m:startHijri.m, d:startHijri.d};
+    const g=hijriToGreg(h.y,h.m,h.d).getTime();
+    if(g>endMs) break;
+    out.push({n, ms:g, hijri:gregToHijri(new Date(g))});   // re-read hijri (handles month-length clamp)
+  }
+  return out;
+}
+
+/* ---------- State & persistence ---------- */
+let assets = load('zakat.assets', []);
+let prices = load('zakat.prices', {});       // { hijriKey: numberEGP }
+let fxRates = load('zakat.fx', {usd:null, sar:null}); // EGP per 1 USD / 1 SAR
+let nisabEnabled = load('zakat.nisab', true);
+let payments = load('zakat.payments', []);    // [{id,type:'payment',amount,paidHijri,paidMs}] — recorded Zakat payments
+let lastResults = null;                       // map dateMs -> result, after Calculate
+const ZOOM_DEFAULT = 22;
+let zoomLevel = ZOOM_DEFAULT;
+let pxPerDay = 0.18;
+
+function load(k,def){ try{ const v=JSON.parse(localStorage.getItem(k)); return v==null?def:v; }catch{ return def; } }
+function clampZoom(z){ const n=+z; return isNaN(n)?ZOOM_DEFAULT:Math.max(1,Math.min(100,Math.round(n))); }
+function pxFromZoom(level){ const t=(clampZoom(level)-1)/99; return 0.03*Math.pow(900,t); }
+function setZoom(level,{persist=true,render=true}={}){
+  zoomLevel=clampZoom(level);
+  const z=$('#zoom'); if(z) z.value=zoomLevel;
+  pxPerDay=pxFromZoom(zoomLevel);
+  if(persist) save();
+  if(render) renderChart();
+}
+function save(){ localStorage.setItem('zakat.assets',JSON.stringify(assets));
+  localStorage.setItem('zakat.prices',JSON.stringify(prices));
+  localStorage.setItem('zakat.fx',JSON.stringify(fxRates));
+  localStorage.setItem('zakat.nisab',JSON.stringify(nisabEnabled));
+  localStorage.setItem('zakat.payments',JSON.stringify(payments));
+  localStorage.setItem('zakat.zoom',JSON.stringify(zoomLevel)); }
+const fmtEGP = new Intl.NumberFormat('en-EG',{style:'currency',currency:'EGP',maximumFractionDigits:2});
+const money = n => fmtEGP.format(n||0);
+const cashCur = a => a.currency || 'EGP';
+const cashNeedsFx = c => c==='USD' || c==='SAR';
+function fxToEGP(currency){
+  const c=currency||'EGP';
+  if(c==='EGP') return 1;
+  const v=c==='USD'?fxRates.usd:fxRates.sar;
+  return (v===''||v==null||isNaN(+v)||!(+v>0)) ? null : +v;
+}
+function cashToEGP(amount, currency){
+  const rate=fxToEGP(currency);
+  return rate==null ? null : amount*rate;
+}
+function fmtNative(amount, currency){
+  const c=currency||'EGP';
+  if(c==='EGP') return money(amount);
+  return `${c} ${(+amount).toLocaleString('en-US',{maximumFractionDigits:2})}`;
+}
+const assetTitle = a => {
+  const h=currentHold(a);
+  return a.type==='gold' ? `${h.grams} g · ${a.carat}k gold` : `${fmtNative(h.amount, cashCur(a))} cash`;
+};
+const cashLabel = a => { const c=cashCur(a); return c==='EGP'?'Cash':`Cash (${c})`; };
+
+/* ---------- Zakat engine (pure) ---------- */
+function priceFor(ms){                                   // EGP/gram 24k at a date, or null
+  const v = prices[hKey(gregToHijri(new Date(ms)))];
+  return (v===''||v==null||isNaN(+v)) ? null : +v;
+}
+function valueAt(asset, hold, ms){
+  if(asset.type==='cash'){
+    const v=cashToEGP(hold.amount, cashCur(asset));
+    return v==null ? 0 : v;
+  }
+  const p = priceFor(ms);
+  return p==null ? 0 : hold.grams * p * asset.carat/24;
+}
+function latestGoldPrice(){              // EGP/gram 24k of the most recently dated entered price, or null
+  let bestKey=null;
+  for(const k in prices){
+    const v=prices[k];
+    if(v===''||v==null||isNaN(+v)) continue;
+    if(bestKey===null || k>bestKey) bestKey=k;        // canonical hijri keys (YYYY-MM-DD) sort chronologically
+  }
+  return bestKey==null ? null : +prices[bestKey];
+}
+function currentHold(a){
+  const sum = (a.reductions||[]).reduce((s,r)=>s+(r.delta||0),0);
+  if(a.type==='gold') return {grams:Math.max(0,a.grams-sum)};
+  return {amount:Math.max(0,a.amount-sum)};
+}
+function currentValue(a){                // current monetary value in EGP; null if unknown
+  const h=currentHold(a);
+  if(a.type==='cash') return cashToEGP(h.amount, cashCur(a));
+  const p=latestGoldPrice();
+  return p==null ? null : h.grams * p * a.carat/24;
+}
+function nextAnniversary(startHijri){    // first anniversary strictly after today -> {n, ms, hijri}
+  const today=todayMs();
+  for(let n=1;;n++){
+    const g=hijriToGreg(startHijri.y+n, startHijri.m, startHijri.d).getTime();
+    if(g>today) return {n, ms:g, hijri:gregToHijri(new Date(g))};
+  }
+}
+function effEnd(a, endMs){               // effective haul horizon: capped by an asset's sale/end date
+  return a.endMs!=null ? Math.min(endMs, a.endMs) : endMs;
+}
+function computeZakat(assets, nisabEnabled, endMs){
+  // collect & group all event dates (anniversaries + reductions)
+  const byDate = new Map();
+  const getEntry = ms => {
+    if(!byDate.has(ms)) byDate.set(ms, {ms, hijri:gregToHijri(new Date(ms)), maturing:[], reductions:[]});
+    return byDate.get(ms);
+  };
+  for(const a of assets){
+    a.startMs = hijriToGreg(a.startHijri.y,a.startHijri.m,a.startHijri.d).getTime();
+    for(const ann of anniversaries(a.startHijri, effEnd(a, endMs))){
+      getEntry(ann.ms).maturing.push({id:a.id, n:ann.n});
+    }
+    if(a.reductions) for(const r of a.reductions){
+      if(r.ms <= endMs) getEntry(r.ms).reductions.push({id:a.id, delta:r.delta});
+    }
+  }
+  const events=[...byDate.values()].sort((x,y)=>x.ms-y.ms);
+
+  // running holdings
+  const hold={};
+  for(const a of assets) hold[a.id] = a.type==='gold' ? {grams:a.grams} : {amount:a.amount};
+
+  const byId = Object.fromEntries(assets.map(a=>[a.id,a]));
+  const results=[];
+  for(const ev of events){
+    // Apply reductions first
+    for(const r of ev.reductions){
+      const a=byId[r.id];
+      if(a.type==='gold') hold[r.id].grams = Math.max(0, hold[r.id].grams - r.delta);
+      else hold[r.id].amount = Math.max(0, hold[r.id].amount - r.delta);
+    }
+    if(!ev.maturing.length) continue;
+
+    let before=0, missing=false;
+    for(const a of assets){
+      if(a.startMs<=ev.ms && (a.endMs==null || ev.ms<=a.endMs)){
+        if(a.type==='gold' && priceFor(ev.ms)==null) missing=true;
+        else if(a.type==='cash' && cashNeedsFx(cashCur(a)) && fxToEGP(cashCur(a))==null) missing=true;
+        before += valueAt(a, hold[a.id], ev.ms);
+      }
+    }
+    const p24 = priceFor(ev.ms);
+    let nisabPass=true, nisabKnown=true;
+    if(nisabEnabled){
+      if(p24==null){ nisabKnown=false; nisabPass=false; missing=true; }
+      else nisabPass = before >= 85*p24;
+    }
+    let zakatable=0;
+    for(const m of ev.maturing) zakatable += valueAt(byId[m.id], hold[m.id], ev.ms);
+    const zakat = nisabPass ? 0.025*zakatable : 0;
+    if(zakat>0){
+      for(const m of ev.maturing){
+        const a=byId[m.id];
+        if(a.type==='gold') hold[m.id].grams *= 0.975; else hold[m.id].amount *= 0.975;
+      }
+    }
+    results.push({ms:ev.ms, hijri:ev.hijri, maturing:ev.maturing.map(m=>m.id),
+      before, zakatable, zakat, after:before-zakat, nisabPass, nisabKnown, missing});
+  }
+  return results;
+}
+function lifetimeDue(){ let s=0; if(lastResults) for(const r of lastResults.values()) s+=r.zakat||0; return s; }
+function paidTotal(){ return payments.reduce((s,p)=>s+(+p.amount||0),0); }
+function outstanding(){ return Math.max(0, lifetimeDue()-paidTotal()); }   // never negative
+
+/* ---------- Rendering: Gantt ---------- */
+const $ = s => document.querySelector(s);
+const svg = $('#svg'), labelsEl = $('#labels'), scrollEl = $('#scroll');
+const AXIS_H = 46, ROW_H = 72, PAD_L = 12, PAD_R = 60;
+
+function timeBounds(){
+  let min=Infinity;
+  for(const a of assets) min=Math.min(min, hijriToGreg(a.startHijri.y,a.startHijri.m,a.startHijri.d).getTime());
+  const max=todayMs();
+  if(!isFinite(min)) min=max;
+  return {min, max};
+}
+function updatePayBtn(){                 // "Pay Zakat" is actionable only once Calculate has produced results
+  const b=$('#payBtn');
+  if(b){ b.disabled=!lastResults; b.title=lastResults?'Record a Zakat payment':'Run Calculate first to see what’s due'; }
+}
+function renderChart(){
+  // combined row list: assets first, then payment records (rendered in red)
+  const rows = [...assets.map(a=>({kind:'asset', a})), ...payments.map(p=>({kind:'pay', p}))];
+  // labels column
+  labelsEl.innerHTML='<div class="axis-pad"></div>';
+  for(const r of rows){
+    const div=document.createElement('div'); div.className='lbl';
+    if(r.kind==='pay'){
+      const p=r.p;
+      div.innerHTML=`<span class="t">🔴 Zakat Paid</span>
+        <span class="s">${hLabel(p.paidHijri)} · ${gLabel(p.paidMs)}</span>
+        <span class="v"><span class="setp">−${money(p.amount)}</span></span>
+        <span class="del" data-pay="${p.id}">✕ remove</span>`;
+    } else {
+      const a=r.a, ended=a.endMs!=null;
+      const cv=currentValue(a);
+      const fxMiss=a.type==='cash' && cashNeedsFx(cashCur(a)) && cv==null;
+      const valStr = ended ? '<span class="setp">● sold</span>'
+        : (cv==null ? `<span class="setp">⚠ set ${fxMiss?cashCur(a)+' rate':'gold price'}</span>` : money(cv));
+      div.innerHTML=`<span class="t">${a.type==='gold'?'🟡':'🔵'} ${a.type==='gold'?a.carat+'k Gold':cashLabel(a)}</span>
+        <span class="s">${assetTitle(a)} · ${hLabel(a.startHijri)}${ended?' · sold '+hLabel(a.endHijri):''}</span>
+        <span class="v">${valStr}</span>
+        <div style="display:flex;gap:8px">
+          <span class="del" data-id="${a.id}">✕ remove</span>
+          ${!ended?`<span class="del" data-red="${a.id}" style="color:var(--accent2)">↓ reduce</span>`:''}
+        </div>`;
+    }
+    labelsEl.appendChild(div);
+  }
+  if(!rows.length){ svg.innerHTML=''; svg.style.height='0';
+    scrollEl.innerHTML='<div class="empty">No assets yet. Click <b>＋ Add Asset</b> to start your timeline.</div>';
+    updatePayBtn(); return; }
+  if(!scrollEl.contains(svg)){ scrollEl.innerHTML=''; scrollEl.appendChild(svg); }
+
+  const {min,max}=timeBounds();
+  let projMax=max;                                   // extend canvas to the furthest projected anniversary
+  for(const a of assets){ if(a.endMs!=null) continue; projMax=Math.max(projMax, nextAnniversary(a.startHijri).ms); }
+  const drawMax=projMax;
+  const days=Math.max(1,(drawMax-min)/DAY);
+  const W = PAD_L + days*pxPerDay + PAD_R;
+  const H = AXIS_H + rows.length*ROW_H;
+  svg.setAttribute('width',W); svg.setAttribute('height',H); svg.style.height=H+'px';
+  const X = ms => PAD_L + (ms-min)/DAY*pxPerDay;
+  let s=`<rect x="0" y="0" width="${W}" height="${H}" fill="transparent"/>`;
+
+  // Hijri year gridlines
+  const h0=gregToHijri(new Date(min)), h1=gregToHijri(new Date(drawMax));
+  for(let y=h0.y; y<=h1.y+1; y++){
+    const ms=hijriToGreg(y,1,1).getTime();
+    if(ms<min-2*DAY||ms>drawMax+2*DAY) continue;
+    const x=X(ms);
+    s+=`<line class="axis-line" x1="${x}" y1="${AXIS_H-10}" x2="${x}" y2="${H}"/>`;
+    s+=`<text class="axis-txt" x="${x+4}" y="${AXIS_H-16}">${y} AH</text>`;
+  }
+  // "today" marker
+  const tx=X(max);
+  s+=`<line x1="${tx}" y1="${AXIS_H-10}" x2="${tx}" y2="${H}" stroke="#3b82f6" stroke-dasharray="4 4"/>`;
+  s+=`<text class="axis-txt" x="${tx+4}" y="${H-6}" fill="#3b82f6">today</text>`;
+
+  // rows
+  rows.forEach((r,i)=>{
+    const cy=AXIS_H + i*ROW_H + ROW_H/2;
+    s+=`<line class="row-base" x1="0" y1="${AXIS_H+(i+1)*ROW_H}" x2="${W}" y2="${AXIS_H+(i+1)*ROW_H}"/>`;
+    if(r.kind==='pay'){                              // red Zakat-paid record: a diamond + amount at the paid date
+      const p=r.p, xp=X(p.paidMs);
+      s+=`<rect class="mk-pay" data-id="${p.id}" data-ms="${p.paidMs}" x="${xp-7}" y="${cy-7}" width="14" height="14"
+           transform="rotate(45 ${xp} ${cy})" fill="var(--warn)" stroke="#0b0e11" stroke-width="1.5" style="cursor:pointer"/>`;
+      s+=`<text class="axis-txt" x="${xp+12}" y="${cy+4}" fill="var(--warn)">−${money(p.amount)}</text>`;
+      return;
+    }
+    const a=r.a, ended=a.endMs!=null;
+    const x0=X(a.startMs ?? hijriToGreg(a.startHijri.y,a.startHijri.m,a.startHijri.d).getTime());
+    const lineEnd = ended ? Math.min(max, a.endMs) : max;
+    const col=a.type==='gold'?'var(--gold)':'var(--cash)';
+    s+=`<line class="asset-line" x1="${x0}" y1="${cy}" x2="${X(lineEnd)}" y2="${cy}" stroke="${col}"/>`;
+    if(!ended){
+      // dashed projection extension: today -> next anniversary, with a hoverable marker
+      const na=nextAnniversary(a.startHijri); const xn=X(na.ms);
+      s+=`<line x1="${X(max)}" y1="${cy}" x2="${xn}" y2="${cy}" stroke="${col}" stroke-width="2" stroke-dasharray="5 5" opacity="0.65"/>`;
+      s+=`<rect class="mk-proj" data-id="${a.id}" data-ms="${na.ms}" x="${xn-6}" y="${cy-6}" width="12" height="12"
+           transform="rotate(45 ${xn} ${cy})" fill="none" stroke="${col}" stroke-width="2" stroke-dasharray="3 2" style="cursor:pointer"/>`;
+    }
+    s+=`<circle class="mk-start" data-id="${a.id}" cx="${x0}" cy="${cy}" r="6" fill="${col}" style="cursor:pointer"/>`;
+    for(const ann of anniversaries(a.startHijri, lineEnd)){
+      const x=X(ann.ms);
+      const res = lastResults && lastResults.get(ann.ms);
+      let cls='n';
+      if(res){ if(res.missing) cls='w'; else if(res.zakat>0) cls='z'; }
+      const c = cls==='z'?'var(--accent)':cls==='w'?'var(--warn)':'var(--muted)';
+      s+=`<rect class="mk" data-id="${a.id}" data-ms="${ann.ms}" x="${x-6}" y="${cy-6}" width="12" height="12"
+           transform="rotate(45 ${x} ${cy})" fill="${c}" stroke="#0b0e11" stroke-width="1.5" style="cursor:pointer"/>`;
+    }
+    if(a.reductions) for(const rd of a.reductions){
+      const xr=X(rd.ms); if(xr<x0) continue;
+      s+=`<rect class="mk-reduction" data-id="${a.id}" data-rid="${rd.id}" data-ms="${rd.ms}" x="${xr-6}" y="${cy-6}" width="12" height="12"
+           transform="rotate(45 ${xr} ${cy})" fill="#f59e0b" stroke="#0b0e11" stroke-width="1.5" style="cursor:pointer"/>`;
+    }
+    if(ended){                                       // red "death" diamond at the sale/end date
+      const xe=X(a.endMs);
+      s+=`<rect class="mk-death" data-id="${a.id}" data-ms="${a.endMs}" x="${xe-7}" y="${cy-7}" width="14" height="14"
+           transform="rotate(45 ${xe} ${cy})" fill="var(--warn)" stroke="#0b0e11" stroke-width="1.5" style="cursor:pointer"/>`;
+    }
+  });
+  svg.innerHTML=s;
+  updatePayBtn();
+}
+
+/* ---------- Tooltip ---------- */
+const tip=$('#tooltip');
+svg.addEventListener('mouseover',e=>{
+  const ann=e.target.closest('.mk');
+  const start=e.target.closest('.mk-start');
+  const proj=e.target.closest('.mk-proj');
+  const pay=e.target.closest('.mk-pay');
+  const death=e.target.closest('.mk-death');
+  const reduction=e.target.closest('.mk-reduction');
+  if(!ann && !start && !proj && !pay && !death && !reduction) return;
+  let html='';
+  if(ann){
+    const id=ann.dataset.id, ms=+ann.dataset.ms;
+    const a=assets.find(x=>x.id===id);
+    const h=gregToHijri(new Date(ms));
+    html=`<div><b>${a.type==='gold'?a.carat+'k Gold':'Cash'}</b> anniversary</div>
+      <div class="k">${hLabel(h)} · ${gLabel(ms)}</div>`;
+    const r=lastResults && lastResults.get(ms);
+    if(r){
+      html+=`<hr style="border-color:var(--line);margin:6px 0">
+        <div class="k">Total before: <b style="color:var(--txt)">${money(r.before)}</b></div>
+        <div class="k">Zakatable base <span style="opacity:.7">(haul passed)</span>: <b style="color:var(--txt)">${money(r.zakatable)}</b></div>
+        <div>Zakat (2.5%): <span class="z">${money(r.zakat)}</span></div>
+        <div class="k">Total after: <b style="color:var(--txt)">${money(r.after)}</b></div>`;
+      if(r.missing) html+=`<div class="w">⚠ Missing gold price or FX rate</div>`;
+      else if(!r.nisabPass) html+=`<div class="k">Below Nisab — no Zakat due</div>`;
+    } else {
+      html+=`<div class="k">Click “Calculate Zakat” to see figures.</div>`;
+    }
+  } else if(start){
+    const a=assets.find(x=>x.id===start.dataset.id);
+    const ms=a.startMs ?? hijriToGreg(a.startHijri.y,a.startHijri.m,a.startHijri.d).getTime();
+    const ended=a.endMs!=null;
+    const h=currentHold(a);
+    const acq=valueAt(a, {grams:a.grams, amount:a.amount}, ms);
+    const cv=currentValue(a);
+    const holdStr=a.type==='gold'?`${h.grams} g · ${a.carat}k`:fmtNative(h.amount, cashCur(a));
+    const acqStr=(a.type==='gold' && priceFor(ms)==null)?'— (no price that date)':(acq==null?'— (no FX rate)':money(acq));
+    html=`<div><b>${a.type==='gold'?a.carat+'k Gold':cashLabel(a)}</b> acquired</div>
+      <div class="k">${hLabel(gregToHijri(new Date(ms)))} · ${gLabel(ms)}</div>
+      <hr style="border-color:var(--line);margin:6px 0">
+      <div class="k">Holding: <b style="color:var(--txt)">${holdStr}</b></div>
+      <div class="k">Value at acquisition: <b style="color:var(--txt)">${acqStr}</b></div>
+      <div class="k">Current value: <b style="color:var(--txt)">${ended?'— (sold)':cv==null?'— (set price)':money(cv)}</b></div>
+      <hr style="border-color:var(--line);margin:6px 0">`;
+    if(ended){
+      html+=`<div class="w">Sold ${hLabel(a.endHijri)} — out of the future Zakat pool</div>`;
+    } else {
+      const na=nextAnniversary(a.startHijri);
+      html+=`<div class="k">Next anniversary: <b style="color:var(--txt)">${hLabel(na.hijri)} · ${gLabel(na.ms)}</b></div>
+        ${cv==null
+          ? `<div class="w">Expected Zakat — set a gold price</div>`
+          : `<div>Expected Zakat (2.5%): <span class="z">${money(0.025*cv)}</span></div>`}`;
+    }
+  } else if(pay){
+    const p=payments.find(x=>x.id===pay.dataset.id);
+    html=`<div><b class="w">Zakat Paid</b></div>
+      <div class="k">${hLabel(p.paidHijri)} · ${gLabel(p.paidMs)}</div>
+      <hr style="border-color:var(--line);margin:6px 0">
+      <div class="k">Amount paid: <span class="w">${money(p.amount)}</span></div>`;
+  } else if(death){
+    const a=assets.find(x=>x.id===death.dataset.id);
+    html=`<div><b>${a.type==='gold'?a.carat+'k Gold':'Cash'}</b> — sold / no longer held</div>
+      <div class="k">${hLabel(a.endHijri)} · ${gLabel(a.endMs)}</div>
+      <hr style="border-color:var(--line);margin:6px 0">
+      <div class="k">Removed from the future Zakat pool; history kept.</div>`;
+  } else if(reduction){
+    const a=assets.find(x=>x.id===reduction.dataset.id);
+    const rd=a.reductions.find(r=>r.id===reduction.dataset.rid);
+    const h=currentHold(a);
+    const unit=a.type==='gold'?'g':(a.currency||'EGP');
+    html=`<div><b style="color:#f59e0b">Asset Reduction</b></div>
+      <div class="k">${hLabel(rd.hijri)} · ${gLabel(rd.ms)}</div>
+      <hr style="border-color:var(--line);margin:6px 0">
+      <div class="k">Amount removed: <b style="color:var(--txt)">${rd.delta} ${unit}</b></div>
+      <div class="k">Remaining hold: <b style="color:var(--txt)">${a.type==='gold'?h.grams:h.amount} ${unit}</b></div>`;
+  } else {
+    const a=assets.find(x=>x.id===proj.dataset.id), ms=+proj.dataset.ms;
+    const cv=currentValue(a);
+    html=`<div><b>${a.type==='gold'?a.carat+'k Gold':'Cash'}</b> — next haul (projected)</div>
+      <div class="k">${hLabel(gregToHijri(new Date(ms)))} · ${gLabel(ms)}</div>
+      <hr style="border-color:var(--line);margin:6px 0">`;
+    if(cv==null){
+      html+=`<div class="w">Estimate unavailable — set a gold price</div>`;
+    } else {
+      html+=`<div class="k">Projected value: <b style="color:var(--txt)">${money(cv)}</b></div>
+        <div>Est. Zakat (2.5%): <span class="z">${money(0.025*cv)}</span></div>
+        <div class="k" style="font-size:11px;opacity:.8">Estimate at latest known price</div>`;
+    }
+  }
+  tip.innerHTML=html; tip.style.display='block'; positionTip(e);
+});
+svg.addEventListener('mousemove',e=>{ if(tip.style.display==='block') positionTip(e); });
+svg.addEventListener('mouseout',e=>{ if(e.target.closest('.mk,.mk-start,.mk-proj,.mk-pay,.mk-death,.mk-reduction')) tip.style.display='none'; });
+function positionTip(e){
+  const o=12; let x=e.clientX+o, y=e.clientY+o;
+  const r=tip.getBoundingClientRect();
+  if(x+r.width>innerWidth) x=e.clientX-r.width-o;
+  if(y+r.height>innerHeight) y=e.clientY-r.height-o;
+  tip.style.left=x+'px'; tip.style.top=y+'px';
+}
+
+function hideSummary(){ $('#summary').style.display='none'; renderKPIs(null); }
+
+/* remove asset / reduce holding */
+labelsEl.addEventListener('click',e=>{
+  const d=e.target.closest('.del'); if(!d) return;
+  if(d.dataset.pay){                                  // remove a Zakat-paid record (re-opens outstanding balance)
+    payments=payments.filter(p=>p.id!==d.dataset.pay);
+    save(); if(lastResults) calculate(); else renderChart();
+    return;
+  }
+  if(d.dataset.red){                                  // open "Reduce Holding" dialog
+    const a=assets.find(x=>x.id===d.dataset.red);
+    const h=currentHold(a);
+    const unit=a.type==='gold'?'g':(a.currency||'EGP');
+    $('#redAssetSummary').textContent=assetTitle(a);
+    $('#redAssetHold').textContent=`Currently holding: ${a.type==='gold'?h.grams:h.amount} ${unit}`;
+    $('#redAmtLabel').textContent=`Deduction amount (${unit})`;
+    $('#fRedAmount').value=''; $('#redErr').textContent='';
+    $('#reduceConfirm').onclick=()=>{
+      const val=+$('#fRedAmount').value;
+      if(!(val>0) || val>(a.type==='gold'?h.grams:h.amount)){
+        $('#redErr').textContent='Enter a valid deduction amount (cannot exceed current holding).';
+        return;
+      }
+      if(!a.reductions) a.reductions=[];
+      const t=todayMs();
+      a.reductions.push({ id:'r'+Date.now()+Math.random().toString(36).slice(2,6),
+        ms:t, hijri:gregToHijri(new Date(t)), delta:val });
+      save(); lastResults=null; reduceDlg.close(); renderChart(); hideSummary();
+    };
+    reduceDlg.showModal();
+    return;
+  }
+  assets=assets.filter(a=>a.id!==d.dataset.id); lastResults=null;
+  save(); renderChart(); hideSummary(); syncPriceRows();
+});
+const reduceDlg=$('#reduceDlg');
+$('#reduceClose').addEventListener('click',()=>reduceDlg.close());
+$('#reduceCancel').addEventListener('click',()=>reduceDlg.close());
+
+/* ---------- Zoom & scroll ---------- */
+$('#zoom').addEventListener('input',e=>setZoom(e.target.value));
+scrollEl.addEventListener('wheel',e=>{
+  if(e.ctrlKey||e.metaKey){                        // video-editor style zoom (Ctrl/Cmd + wheel)
+    e.preventDefault();
+    setZoom(+$('#zoom').value - Math.sign(e.deltaY)*4);
+  }
+},{passive:false});
+
+/* ---------- Add Asset dialog ---------- */
+const assetDlg=$('#assetDlg'), fType=$('#fType');
+let calMode='greg';
+function refreshAssetForm(){
+  const gold=fType.value==='gold';
+  $('#caratWrap').style.display=gold?'block':'none';
+  $('#currencyWrap').style.display=gold?'none':'block';
+  const cur=gold?'EGP':$('#fCurrency').value;
+  $('#amtLabel').textContent=gold?'Weight (grams)':`Amount (${cur})`;
+  $('#fAmount').placeholder=gold?'e.g. 150':'e.g. 10000';
+  updatePreview();
+}
+fType.addEventListener('change',refreshAssetForm);
+$('#fCurrency').addEventListener('change',refreshAssetForm);
+document.querySelectorAll('#calSeg button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#calSeg button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); calMode=b.dataset.cal; updatePreview();
+}));
+['dY','dM','dD'].forEach(id=>$('#'+id).addEventListener('input',updatePreview));
+function readDate(){
+  const y=+$('#dY').value, m=+$('#dM').value, d=+$('#dD').value;
+  if(!y||!m||!d||m<1||m>12||d<1||d>31) return null;
+  if(calMode==='greg'){
+    const ms=utcMs(y,m,d); const dt=new Date(ms);
+    if(dt.getUTCFullYear()!==y||dt.getUTCMonth()!==m-1||dt.getUTCDate()!==d) return null;
+    return {hijri:gregToHijri(dt), ms};
+  } else {
+    const dt=hijriToGreg(y,m,d); const h=gregToHijri(dt);
+    if(h.y!==y||h.m!==m||h.d!==d) return null;     // invalid hijri day (e.g. 30 in 29-day month)
+    return {hijri:{y,m,d}, ms:dt.getTime()};
+  }
+}
+function updatePreview(){
+  const r=readDate();
+  $('#dPreview').textContent = r
+    ? (calMode==='greg' ? `→ Hijri ${hLabel(r.hijri)}` : `→ Gregorian ${gLabel(r.ms)}`)
+    : 'Enter a valid date.';
+}
+$('#addBtn').addEventListener('click',()=>{
+  $('#assetForm').reset(); calMode='greg';
+  document.querySelectorAll('#calSeg button').forEach(x=>x.classList.toggle('on',x.dataset.cal==='greg'));
+  $('#assetErr').textContent=''; refreshAssetForm(); assetDlg.showModal();
+});
+$('#assetForm').addEventListener('submit',e=>{
+  if(e.submitter && e.submitter.value!=='ok') return;          // cancel/✕
+  e.preventDefault();
+  const err=$('#assetErr'); err.textContent='';
+  const gold=fType.value==='gold';
+  const amt=+$('#fAmount').value;
+  if(!(amt>0)){ err.textContent=gold?'Enter a valid weight in grams.':'Enter a valid amount.'; return; }
+  const r=readDate();
+  if(!r){ err.textContent='Enter a valid acquisition date.'; return; }
+  if(r.ms>todayMs()){ err.textContent='Acquisition date cannot be in the future.'; return; }
+  const a={id:'a'+Date.now()+Math.random().toString(36).slice(2,6), type:fType.value, startHijri:r.hijri};
+  if(gold){ a.carat=+$('#fCarat').value; a.grams=amt; a.currency='EGP'; }
+  else { a.amount=amt; a.currency=$('#fCurrency').value; }
+  assets.push(a); lastResults=null; save();
+  assetDlg.close(); renderChart(); syncPriceRows(); hideSummary();
+});
+
+/* ---------- Settings dialog ---------- */
+const settingsDlg=$('#settingsDlg');
+function readFxInputs(){
+  const u=$('#fxUsd').value, s=$('#fxSar').value;
+  fxRates.usd=(u===''||isNaN(+u)||!(+u>0))?null:+u;
+  fxRates.sar=(s===''||isNaN(+s)||!(+s>0))?null:+s;
+}
+$('#settingsBtn').addEventListener('click',()=>{
+  $('#nisabToggle').checked=nisabEnabled;
+  $('#fxUsd').value=fxRates.usd??'';
+  $('#fxSar').value=fxRates.sar??'';
+  syncPriceRows(); settingsDlg.showModal();
+});
+$('#settingsClose').addEventListener('click',()=>settingsDlg.close());
+$('#settingsSave').addEventListener('click',()=>{
+  nisabEnabled=$('#nisabToggle').checked; readFxInputs(); save(); settingsDlg.close();
+  if(lastResults) calculate();
+});
+$('#fxUsd').addEventListener('input',()=>{ readFxInputs(); save(); });
+$('#fxSar').addEventListener('input',()=>{ readFxInputs(); save(); });
+$('#priceBody').addEventListener('input',e=>{
+  if(e.target.matches('input[data-key]')){
+    const v=e.target.value;
+    if(v==='') delete prices[e.target.dataset.key]; else prices[e.target.dataset.key]=+v;
+    save();
+  }
+});
+function allAnniversaryDates(){          // union across all assets, sorted
+  const map=new Map(); const end=todayMs();
+  for(const a of assets) for(const ann of anniversaries(a.startHijri,end)) map.set(ann.ms,ann.hijri);
+  return [...map.entries()].sort((x,y)=>x[0]-y[0]).map(([ms,hijri])=>({ms,hijri}));
+}
+function syncPriceRows(){
+  const rows=allAnniversaryDates();
+  const body=$('#priceBody');
+  $('#priceEmpty').style.display=rows.length?'none':'block';
+  body.innerHTML=rows.map(({ms,hijri})=>{
+    const k=hKey(hijri); const v=prices[k]??'';
+    return `<tr><td>${hLabel(hijri)}</td><td class="src">${gLabel(ms)}</td>
+      <td><input type="number" step="any" min="0" data-key="${k}" value="${v}" placeholder="—"/></td></tr>`;
+  }).join('');
+}
+
+/* ---------- Calculate ---------- */
+$('#calcBtn').addEventListener('click', calculate);
+function calculate(){
+  if(!assets.length){ alert('Add at least one asset first.'); return; }
+  const res=computeZakat(assets, nisabEnabled, todayMs());
+  lastResults=new Map(res.map(r=>[r.ms,r]));
+  // summary table
+  const byId=Object.fromEntries(assets.map(a=>[a.id,a]));
+  $('#sumBody').innerHTML = res.map(r=>{
+    const names=r.maturing.map(id=>{const a=byId[id]; return a.type==='gold'?`${a.carat}k gold`:'cash';}).join(', ');
+    let note=''; if(r.missing) note='<span class="flag">⚠ missing price</span>';
+    else if(!r.nisabPass) note='<span class="muted">below Nisab</span>';
+    return `<tr><td>${hLabel(r.hijri)}</td><td class="muted">${gLabel(r.ms)}</td><td>${names}</td>
+      <td>${money(r.before)}</td><td>${money(r.zakatable)}</td><td class="zak">${money(r.zakat)}</td><td>${money(r.after)}</td><td>${note}</td></tr>`;
+  }).join('') || `<tr><td colspan="8" class="muted">No completed Hijri years yet.</td></tr>`;
+  
+  const totalZakat = res.reduce((s,r)=>s+r.zakat,0);
+  const missing = res.some(r=>r.missing);
+  renderKPIs(res, totalZakat, missing);
+  
+  $('#summary').style.display='block';
+  renderChart();   // recolor markers
+}
+
+function renderKPIs(res, totalZakat, missing){
+  const kpiEl = $('#kpiCards');
+  if(!res){ kpiEl.style.display='none'; return; }
+  const paid = paidTotal();
+  const out = outstanding();
+  kpiEl.innerHTML = `
+    <div class="kpi-card"><b>Lifetime Zakat due</b><span class="zak">${money(totalZakat)}</span></div>
+    <div class="kpi-card"><b>Zakat paid</b><span class="paid">${money(paid)}</span></div>
+    <div class="kpi-card"><b>Outstanding</b><span class="zak">${money(out)}</span></div>
+    <div class="kpi-card"><b>Zakat events</b><span>${res.length}</span></div>
+    <div class="kpi-card"><b>Nisab</b><span>${nisabEnabled?'applied (85g)':'off'}</span></div>
+  `;
+  kpiEl.style.display='flex';
+  
+  $('#totals').innerHTML=`
+    <div><b>Lifetime Zakat due</b><span class="zak">${money(totalZakat)}</span></div>
+    ${paid>0||out>0?`<div><b>Zakat paid</b><span style="color:var(--warn)">${money(paid)}</span></div>
+    <div><b>Outstanding</b><span class="zak">${money(out)}</span></div>`:''}
+    <div><b>Zakat events</b><span>${res.length}</span></div>
+    <div><b>Nisab</b><span>${nisabEnabled?'applied (85g)':'off'}</span></div>
+    ${missing?'<div><b>Status</b><span style="color:var(--warn)">⚠ fill missing gold prices or FX rates in Settings</span></div>':''}`;
+}
+
+/* ---------- Export / Import state ---------- */
+$('#exportBtn').addEventListener('click',()=>{
+  const snapshot={ version:1, exportedAt:new Date().toISOString(),
+    assets, prices, fxRates, nisab:nisabEnabled, payments, zoom:zoomLevel, calculated:!!lastResults };
+  const blob=new Blob([JSON.stringify(snapshot,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const d=new Date(); const stamp=`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+  const a=document.createElement('a');
+  a.href=url; a.download=`zakat-state-${stamp}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+});
+$('#importBtn').addEventListener('click',()=>$('#importFile').click());
+$('#importFile').addEventListener('change',e=>{
+  const file=e.target.files[0]; e.target.value=''; if(!file) return;   // reset so same file re-imports
+  const reader=new FileReader();
+  reader.onerror=()=>alert('Import failed: could not read the file.');
+  reader.onload=()=>{
+    try{
+      const data=JSON.parse(reader.result);
+      if(!data || !Array.isArray(data.assets) ||
+         typeof data.prices!=='object' || data.prices==null || Array.isArray(data.prices) ||
+         (data.payments!==undefined && !Array.isArray(data.payments)))
+        throw new Error('not a valid Zakat state snapshot');
+      assets=data.assets;
+      prices=data.prices;
+      fxRates=(data.fxRates&&typeof data.fxRates==='object'&&!Array.isArray(data.fxRates))
+        ?{usd:data.fxRates.usd??null, sar:data.fxRates.sar??null}:{usd:null,sar:null};
+      payments=Array.isArray(data.payments)?data.payments:[];
+      if(data.nisab!==undefined) nisabEnabled=!!data.nisab;
+      if(data.zoom!==undefined) setZoom(data.zoom,{persist:false,render:false});
+      lastResults=null;
+      save(); renderChart(); syncPriceRows(); hideSummary();
+      if(data.calculated) calculate();
+    }catch(err){
+      alert('Import failed: the file is not a valid Zakat state snapshot.');
+    }
+  };
+  reader.readAsText(file);
+});
+
+/* ---------- Pay Zakat ---------- */
+const payDlg=$('#payDlg');
+$('#payBtn').addEventListener('click',()=>{
+  if(!lastResults) return;                            // gated; should be disabled, but guard anyway
+  $('#payAmount').textContent=money(outstanding());
+  const t=todayMs();
+  $('#payDate').textContent=`Recorded as of ${hLabel(gregToHijri(new Date(t)))} · ${gLabel(t)}`;
+  const active=assets.filter(a=>a.endMs==null);
+  $('#paySoldList').innerHTML = active.length
+    ? active.map(a=>{
+        const h=currentHold(a);
+        return `<label class="toggle" style="margin:6px 0">
+        <input type="checkbox" data-id="${a.id}" style="width:18px;min-width:18px;height:18px;padding:0;background:none;accent-color:var(--accent)">
+        <span>${a.type==='gold'?`${a.carat}k Gold · ${h.grams} g`:`${cashLabel(a)} · ${fmtNative(h.amount, cashCur(a))}${currentValue(a)!=null?` (${money(currentValue(a))})`:''}`}
+          <span class="hint" style="display:inline">(${hLabel(a.startHijri)})</span></span></label>`;
+      }).join('')
+    : '<div class="hint">No active assets to mark.</div>';
+  payDlg.showModal();
+});
+$('#payClose').addEventListener('click',()=>payDlg.close());
+$('#payCancel').addEventListener('click',()=>payDlg.close());
+$('#payConfirm').addEventListener('click',()=>{
+  const due=outstanding();
+  if(due>0){
+    payments.push({ id:'p'+Date.now()+Math.random().toString(36).slice(2,6), type:'payment',
+      amount:due, paidHijri:gregToHijri(new Date(todayMs())), paidMs:todayMs() });
+  }
+  const checked=[...$('#paySoldList').querySelectorAll('input[type=checkbox]:checked')].map(c=>c.dataset.id);
+  for(const id of checked){
+    const a=assets.find(x=>x.id===id);
+    if(a){ a.endMs=todayMs(); a.endHijri=gregToHijri(new Date(todayMs())); }
+  }
+  save(); payDlg.close();
+  calculate();                                        // recompute, re-render, refresh totals + button state
+});
+
+/* ---------- Inline self-tests (console) ---------- */
+(function selfTests(){
+  const A=console.assert, near=(a,b,e=1e-6)=>Math.abs(a-b)<=e;
+  // 1. Hijri round-trip
+  const d=new Date(Date.UTC(2021,11,1)); const h=gregToHijri(d);
+  A(hijriToGreg(h.y,h.m,h.d).getTime()===d.getTime(),'TEST hijri round-trip 2021-12-01');
+  // 2. anniversary adds a Hijri year
+  const anns=anniversaries(h, Date.UTC(2026,5,5));
+  A(anns.length>=4 && anns[0].hijri.y===h.y+1,'TEST first anniversary = start year +1');
+  // 3. worked Zakat example: 150g 21k @ price 1000 EGP/g(24k), nisab on
+  const testAssets=[{id:'t',type:'gold',carat:21,grams:150,currency:'EGP',startHijri:{y:1443,m:1,d:1}}];
+  const k=hKey({y:1444,m:1,d:1}); const savedPrices=prices; prices={[k]:1000};
+  const r=computeZakat(testAssets,true,hijriToGreg(1444,1,1).getTime());
+  const expVal=150*1000*21/24, expZak=expVal*0.025;       // 131250, 3281.25
+  A(r.length>=1 && near(r[0].before,expVal) && near(r[0].zakat,expZak),
+    `TEST year-1 zakat: got ${r[0]&&r[0].zakat}, expected ${expZak}`);
+  // 4. nisab gate: tiny holding -> 0 zakat
+  const small=[{id:'s',type:'gold',carat:24,grams:1,currency:'EGP',startHijri:{y:1443,m:1,d:1}}];
+  const r2=computeZakat(small,true,hijriToGreg(1444,1,1).getTime());
+  A(r2[0] && r2[0].zakat===0,'TEST below-nisab => zakat 0');
+  prices=savedPrices;
+  // 5. currentValue: cash nominal, gold at latest entered price
+  const savedP2=prices; prices={'1444-01-01':1000};
+  A(currentValue({type:'cash',amount:5000})===5000,'TEST currentValue cash = amount');
+  A(near(currentValue({type:'gold',carat:21,grams:150}), 150*1000*21/24),'TEST currentValue gold @ latest price');
+  prices={}; A(currentValue({type:'gold',carat:24,grams:10})===null,'TEST currentValue gold null when unpriced');
+  prices=savedP2;
+  // 6. nextAnniversary is strictly after today
+  const naT=nextAnniversary({y:1443,m:1,d:1});
+  A(naT && naT.ms>todayMs() && naT.hijri,'TEST nextAnniversary after today');
+  // 7. ended asset: hauls only counted up to endMs (sale date)
+  const sp7=prices; prices={[hKey({y:1444,m:1,d:1})]:1000,[hKey({y:1445,m:1,d:1})]:1000};
+  const endedA=[{id:'e',type:'gold',carat:24,grams:100,currency:'EGP',startHijri:{y:1443,m:1,d:1},
+    endHijri:{y:1444,m:6,d:1}, endMs:hijriToGreg(1444,6,1).getTime()}];
+  const re=computeZakat(endedA,false,hijriToGreg(1446,1,1).getTime());
+  A(re.length===1 && re[0].ms===hijriToGreg(1444,1,1).getTime(),
+    `TEST ended asset: only haul before endMs counted (got ${re.length})`);
+  prices=sp7;
+  // 8. outstanding = max(0, lifetimeDue - paidTotal)
+  const sL=lastResults, sPay=payments;
+  lastResults=new Map([[1,{zakat:1000}],[2,{zakat:500}]]); payments=[{amount:1200}];
+  A(lifetimeDue()===1500 && paidTotal()===1200 && outstanding()===300,'TEST outstanding = due − paid');
+  payments=[{amount:9999}]; A(outstanding()===0,'TEST outstanding never negative');
+  lastResults=sL; payments=sPay;
+  // 9. FX: EGP passthrough, USD/SAR conversion, missing rate
+  const sFx=fxRates; fxRates={usd:50, sar:12.5};
+  A(currentValue({type:'cash',amount:5000,currency:'EGP'})===5000,'TEST EGP cash unchanged');
+  A(near(currentValue({type:'cash',amount:500,currency:'USD'}),25000),'TEST USD cash @ rate 50');
+  A(near(currentValue({type:'cash',amount:1000,currency:'SAR'}),12500),'TEST SAR cash @ rate 12.5');
+  fxRates={usd:null,sar:null};
+  A(currentValue({type:'cash',amount:500,currency:'USD'})===null,'TEST USD cash null when rate missing');
+  fxRates={usd:50,sar:12.5};
+  const mix=[{id:'c1',type:'cash',amount:10000,currency:'EGP',startHijri:{y:1443,m:1,d:1}},
+    {id:'c2',type:'cash',amount:500,currency:'USD',startHijri:{y:1443,m:1,d:1}}];
+  const spMix=prices; prices={[hKey({y:1444,m:1,d:1})]:1000};
+  const rm=computeZakat(mix,false,hijriToGreg(1444,1,1).getTime());
+  A(rm.length>=1 && near(rm[0].before,10000+25000),'TEST mixed EGP+USD total in EGP');
+  prices=spMix; fxRates=sFx;
+
+  // 10. Reductions
+  const ar={id:'r',type:'cash',amount:10000,currency:'EGP',startHijri:{y:1443,m:1,d:1},
+    reductions:[{id:'r1',ms:hijriToGreg(1444,1,1).getTime(),hijri:{y:1444,m:1,d:1},delta:3000}]};
+  A(currentHold(ar).amount===7000,'TEST currentHold after reduction');
+  const spR=prices; prices={[hKey({y:1444,m:1,d:1})]:1000,[hKey({y:1445,m:1,d:1})]:1000};
+  const rr=computeZakat([ar],false,hijriToGreg(1445,1,1).getTime());
+  A(rr.length===2,'TEST reduction timeline has 2 anniversaries');
+  A(near(rr[0].zakatable, 7000),'TEST anniversary ON reduction day uses reduced base');
+  A(near(rr[1].zakatable, 7000*0.975),'TEST next anniversary uses surviving base');
+  const ar2={id:'r2',type:'cash',amount:10000,currency:'EGP',startHijri:{y:1443,m:1,d:1},
+    reductions:[{id:'r2',ms:hijriToGreg(1444,6,1).getTime(),hijri:{y:1444,m:6,d:1},delta:3000}]};
+  const rr2=computeZakat([ar2],false,hijriToGreg(1445,1,1).getTime());
+  A(near(rr2[0].zakatable, 10000),'TEST anniversary BEFORE reduction day unchanged');
+  A(near(rr2[1].zakatable, 10000*0.975 - 3000),'TEST anniversary AFTER reduction uses reduced base');
+  prices=spR;
+
+  console.log('%cZakat self-tests executed (see assertion failures above, if any).','color:#0ecb81');
+})();
+
+/* ---------- init ---------- */
+setZoom(clampZoom(load('zakat.zoom',ZOOM_DEFAULT)),{persist:false,render:false});
+renderChart();
+syncPriceRows();
+</script>
+</body>
+</html>

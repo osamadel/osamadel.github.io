@@ -1,40 +1,47 @@
 /* Osama Feshier — site interactions */
 (function () {
-  'use strict';
+  "use strict";
 
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---- Footer year ---- */
-  var yearEl = document.getElementById('year');
+  var yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   /* ---- Sticky nav state ---- */
-  var nav = document.getElementById('nav');
+  var nav = document.getElementById("nav");
+  var scrollTicking = false;
   var onScroll = function () {
-    if (window.scrollY > 12) nav.classList.add('is-scrolled');
-    else nav.classList.remove('is-scrolled');
+    if (!scrollTicking) {
+      requestAnimationFrame(function () {
+        if (window.scrollY > 12) nav.classList.add("is-scrolled");
+        else nav.classList.remove("is-scrolled");
+        scrollTicking = false;
+      });
+      scrollTicking = true;
+    }
   };
-  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
   /* ---- Mobile menu ---- */
-  var toggle = document.getElementById('navToggle');
-  var links = document.querySelector('.nav__links');
+  var toggle = document.getElementById("navToggle");
+  var links = document.querySelector(".nav__links");
   if (toggle && links) {
-    toggle.addEventListener('click', function () {
-      var open = links.classList.toggle('is-open');
-      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.addEventListener("click", function () {
+      var open = links.classList.toggle("is-open");
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
     });
-    links.addEventListener('click', function (e) {
-      if (e.target.tagName === 'A') {
-        links.classList.remove('is-open');
-        toggle.setAttribute('aria-expanded', 'false');
+    links.addEventListener("click", function (e) {
+      if (e.target.tagName === "A") {
+        links.classList.remove("is-open");
+        toggle.setAttribute("aria-expanded", "false");
       }
     });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && links.classList.contains('is-open')) {
-        links.classList.remove('is-open');
-        toggle.setAttribute('aria-expanded', 'false');
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && links.classList.contains("is-open")) {
+        links.classList.remove("is-open");
+        toggle.setAttribute("aria-expanded", "false");
         toggle.focus();
       }
     });
@@ -42,231 +49,365 @@
 
   /* ---- Skills data → cards ---- */
   var skills = [
-    { name: 'Machine Learning', tools: 'scikit-learn · TensorFlow', level: 'Expert', pct: 95 },
-    { name: 'Python', tools: 'pandas · numpy · PySpark', level: 'Expert', pct: 95 },
-    { name: 'GenAI · Agentic RAG', tools: 'Claude · Llama-Index · LangChain', level: 'Experienced', pct: 85 },
-    { name: 'LLMs · Multi-Agent', tools: 'tool use · orchestration', level: 'Experienced', pct: 82 },
-    { name: 'Statistics', tools: 'statsmodels · pingouin', level: 'Experienced', pct: 80 },
-    { name: 'SQL', tools: 'Postgres · Oracle', level: 'Experienced', pct: 80 },
-    { name: 'Databricks', tools: 'Spark · Delta Lake', level: 'Skillful', pct: 72 },
-    { name: 'MLOps & Git', tools: 'CI/CD · CRISP-DM', level: 'Skillful', pct: 70 },
-    { name: 'Computer Vision', tools: 'OpenCV · CNNs', level: 'Skillful', pct: 68 },
-    { name: 'Numerical Optimization', tools: '', level: 'Skillful', pct: 68 },
-    { name: 'Linux', tools: '', level: 'Skillful', pct: 66 },
-    { name: 'Airflow · Kafka', tools: 'orchestration · streaming', level: 'Growing', pct: 50 },
-    { name: 'Time Series', tools: '', level: 'Growing', pct: 45 },
-    { name: 'AWS', tools: 'cloud ML', level: 'Growing', pct: 42 },
-    { name: 'R', tools: 'statistical modeling', level: 'Growing', pct: 40 }
+    {
+      name: "Machine Learning",
+      tools: "scikit-learn · TensorFlow",
+      level: "Expert",
+      pct: 95,
+    },
+    {
+      name: "Python",
+      tools: "pandas · numpy · PySpark",
+      level: "Expert",
+      pct: 95,
+    },
+    {
+      name: "GenAI · Agentic RAG",
+      tools: "Claude · Llama-Index · LangChain",
+      level: "Experienced",
+      pct: 85,
+    },
+    {
+      name: "LLMs · Multi-Agent",
+      tools: "tool use · orchestration",
+      level: "Experienced",
+      pct: 82,
+    },
+    {
+      name: "Statistics",
+      tools: "statsmodels · pingouin",
+      level: "Experienced",
+      pct: 80,
+    },
+    { name: "SQL", tools: "Postgres · Oracle", level: "Experienced", pct: 80 },
+    {
+      name: "Databricks",
+      tools: "Spark · Delta Lake",
+      level: "Skillful",
+      pct: 72,
+    },
+    {
+      name: "MLOps & Git",
+      tools: "CI/CD · CRISP-DM",
+      level: "Skillful",
+      pct: 70,
+    },
+    {
+      name: "Computer Vision",
+      tools: "OpenCV · CNNs",
+      level: "Skillful",
+      pct: 68,
+    },
+    { name: "Numerical Optimization", tools: "", level: "Skillful", pct: 68 },
+    { name: "Linux", tools: "", level: "Skillful", pct: 66 },
+    {
+      name: "Airflow · Kafka",
+      tools: "orchestration · streaming",
+      level: "Growing",
+      pct: 50,
+    },
+    { name: "Time Series", tools: "", level: "Growing", pct: 45 },
+    { name: "AWS", tools: "cloud ML", level: "Growing", pct: 42 },
+    { name: "R", tools: "statistical modeling", level: "Growing", pct: 40 },
   ];
 
-  var grid = document.getElementById('skillsGrid');
+  var grid = document.getElementById("skillsGrid");
   if (grid) {
-    grid.innerHTML = skills.map(function (s) {
-      var tools = s.tools ? '<span class="skill__tools">' + s.tools + '</span>' : '';
-      return '' +
-        '<div class="skill reveal">' +
+    grid.innerHTML = skills
+      .map(function (s) {
+        var tools = s.tools
+          ? '<span class="skill__tools">' + s.tools + "</span>"
+          : "";
+        return (
+          "" +
+          '<div class="skill reveal">' +
           '<div class="skill__top">' +
-            '<span class="skill__name">' + s.name + tools + '</span>' +
-            '<span class="skill__level">' + s.level + '</span>' +
-          '</div>' +
-          '<div class="skill__bar"><span class="skill__fill" data-pct="' + s.pct + '"></span></div>' +
-        '</div>';
-    }).join('');
+          '<span class="skill__name">' +
+          s.name +
+          tools +
+          "</span>" +
+          '<span class="skill__level">' +
+          s.level +
+          "</span>" +
+          "</div>" +
+          '<div class="skill__bar"><span class="skill__fill" data-pct="' +
+          s.pct +
+          '"></span></div>' +
+          "</div>"
+        );
+      })
+      .join("");
+  }
+
+  /* ---- Projects Filtering ---- */
+  var filterContainer = document.querySelector(".projects-filter");
+  var projectsGrid = document.querySelector(".projects");
+  if (filterContainer && projectsGrid) {
+    var buttons = filterContainer.querySelectorAll(".filter-btn");
+    var cards = projectsGrid.querySelectorAll(".card");
+
+    buttons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        if (btn.classList.contains("is-active")) return;
+
+        buttons.forEach(function (b) {
+          b.classList.remove("is-active");
+          b.setAttribute("aria-selected", "false");
+        });
+        btn.classList.add("is-active");
+        btn.setAttribute("aria-selected", "true");
+
+        var filterValue = btn.getAttribute("data-filter");
+        var delay = reduce ? 0 : 220;
+
+        projectsGrid.classList.add("is-filtering");
+
+        setTimeout(function () {
+          cards.forEach(function (card) {
+            var categories = (card.getAttribute("data-category") || "").split(
+              " ",
+            );
+            if (
+              filterValue === "all" ||
+              categories.indexOf(filterValue) !== -1
+            ) {
+              card.classList.remove("is-filtered-out");
+              card.classList.add("is-visible");
+            } else {
+              card.classList.add("is-filtered-out");
+            }
+          });
+          projectsGrid.classList.remove("is-filtering");
+        }, delay);
+      });
+    });
   }
 
   /* ---- Reveal-on-scroll + animate skill bars ---- */
   var revealEls = document.querySelectorAll(
-    '.section__title, .section__kicker, .about__text, .about__pillars li, .skill, .card, .edu__item, .contact__link'
+    ".section__title, .section__kicker, .about__text, .about__pillars li, .skill, .card, .edu__item, .contact__link",
   );
-  revealEls.forEach(function (el) { el.classList.add('reveal'); });
+  revealEls.forEach(function (el) {
+    el.classList.add("reveal");
+  });
 
   /* ---- Timeline cascade reveal ---- */
-  var tlEls = document.querySelectorAll('.tl-cascade');
-  var tlSubEls = document.querySelectorAll('.tl-sub-reveal');
+  var tlEls = document.querySelectorAll(".tl-cascade");
+  var tlSubEls = document.querySelectorAll(".tl-sub-reveal");
 
-  if (reduce || !('IntersectionObserver' in window)) {
-    revealEls.forEach(function (el) { el.classList.add('is-visible'); });
-    document.querySelectorAll('.skill__fill').forEach(function (f) { f.style.width = f.dataset.pct + '%'; });
-    tlEls.forEach(function (el) { el.classList.add('is-visible'); });
-    tlSubEls.forEach(function (el) { el.classList.add('is-visible'); });
+  if (reduce || !("IntersectionObserver" in window)) {
+    revealEls.forEach(function (el) {
+      el.classList.add("is-visible");
+    });
+    document.querySelectorAll(".skill__fill").forEach(function (f) {
+      f.style.width = f.dataset.pct + "%";
+    });
+    tlEls.forEach(function (el) {
+      el.classList.add("is-visible");
+    });
+    tlSubEls.forEach(function (el) {
+      el.classList.add("is-visible");
+    });
   } else {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('is-visible');
-        var fill = entry.target.querySelector ? entry.target.querySelector('.skill__fill') : null;
-        if (fill) fill.style.width = fill.dataset.pct + '%';
-        io.unobserve(entry.target);
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    var io = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          var fill = entry.target.querySelector
+            ? entry.target.querySelector(".skill__fill")
+            : null;
+          if (fill) fill.style.width = fill.dataset.pct + "%";
+          io.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
+    );
 
-    revealEls.forEach(function (el) { io.observe(el); });
+    revealEls.forEach(function (el) {
+      io.observe(el);
+    });
 
     /* Timeline observer — fires all items when the section enters view, stagger handled by CSS */
-    var timelineSection = document.getElementById('experience');
+    var timelineSection = document.getElementById("experience");
     if (timelineSection) {
-      var tlIO = new IntersectionObserver(function (entries) {
-        if (!entries[0].isIntersecting) return;
-        tlEls.forEach(function (el) { el.classList.add('is-visible'); });
-        /* Sub-cards reveal after a beat — delay so parent cascade has started */
-        setTimeout(function () {
-          tlSubEls.forEach(function (el) { el.classList.add('is-visible'); });
-        }, 400);
-        tlIO.unobserve(timelineSection);
-      }, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
+      var tlIO = new IntersectionObserver(
+        function (entries) {
+          if (!entries[0].isIntersecting) return;
+          tlEls.forEach(function (el) {
+            el.classList.add("is-visible");
+          });
+          /* Sub-cards reveal after a beat — delay so parent cascade has started */
+          setTimeout(function () {
+            tlSubEls.forEach(function (el) {
+              el.classList.add("is-visible");
+            });
+          }, 400);
+          tlIO.unobserve(timelineSection);
+        },
+        { threshold: 0.08, rootMargin: "0px 0px -60px 0px" },
+      );
       tlIO.observe(timelineSection);
     }
   }
 
   /* ============================================================
-     HERO OVERDRIVE — Signal Field, Signal Wave, Choreography
+     HERO — Interactive Engineering Grid, Choreography
      ============================================================ */
   if (reduce) {
-    /* Reduced motion: instant reveal, no canvases */
-    var heroInstant = document.querySelector('.hero');
+    /* Reduced motion: instant reveal, static grid only */
+    var heroInstant = document.querySelector(".hero");
     if (heroInstant) {
-      heroInstant.classList.add('is-loaded');
-      document.querySelectorAll('.stat__num').forEach(function (el) {
-        el.textContent = el.dataset.target + (el.dataset.suffix || '');
+      heroInstant.classList.add("is-loaded");
+      document.querySelectorAll(".stat__num").forEach(function (el) {
+        el.textContent = el.dataset.target + (el.dataset.suffix || "");
       });
     }
     return;
   }
 
-  var hero = document.querySelector('.hero');
+  var hero = document.querySelector(".hero");
   if (!hero) return;
 
-  /* -- Signal Field (interactive data-point network) -- */
-  var fieldCanvas = document.getElementById('hero-field');
-  var field = {
-    dots: [],
-    mouse: { x: -9999, y: -9999 },
-    w: 0, h: 0, dpr: 1, ctx: null,
-    proximity: 110,
-    cursorRadius: 160,
+  /* -- Interactive Engineering Grid --
+     A subtle 2D canvas grid overlay that illuminates grid lines
+     near the cursor, with a fluorescent rose signal dot snapping
+     to the nearest intersection. Blends into the obsidian base. */
+  var gridCanvas = document.getElementById("hero-field");
+  var grid = {
+    ctx: gridCanvas ? gridCanvas.getContext("2d") : null,
+    mx: -9999,
+    my: -9999,
+    tx: -9999,
+    ty: -9999,
+    size: 46,
+    w: 0,
+    h: 0,
+    dpr: window.devicePixelRatio || 1,
+    radius: 180,
 
     init: function () {
-      this.ctx = fieldCanvas.getContext('2d');
-      this.dpr = window.devicePixelRatio || 1;
+      if (!this.ctx) return;
       this.resize();
-      this.seed();
-
       var self = this;
-      window.addEventListener('resize', function () { self.resize(); self.seed(); });
-      hero.addEventListener('mousemove', function (e) {
-        var r = hero.getBoundingClientRect();
-        self.mouse.x = e.clientX - r.left;
-        self.mouse.y = e.clientY - r.top;
+      window.addEventListener("resize", function () {
+        self.resize();
       });
-      hero.addEventListener('mouseleave', function () {
-        self.mouse.x = -9999;
-        self.mouse.y = -9999;
+      hero.addEventListener("mousemove", function (e) {
+        var r = hero.getBoundingClientRect();
+        self.tx = e.clientX - r.left;
+        self.ty = e.clientY - r.top;
+      });
+      hero.addEventListener("mouseleave", function () {
+        self.tx = -9999;
+        self.ty = -9999;
       });
     },
 
     resize: function () {
+      if (!gridCanvas) return;
       var rect = hero.getBoundingClientRect();
-      fieldCanvas.width = rect.width * this.dpr;
-      fieldCanvas.height = rect.height * this.dpr;
-      this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
       this.w = rect.width;
       this.h = rect.height;
+      gridCanvas.width = rect.width * this.dpr;
+      gridCanvas.height = rect.height * this.dpr;
     },
 
-    seed: function () {
-      var area = this.w * this.h;
-      var count = Math.min(Math.floor(area / 18000), 80);
-      this.dots = [];
-      for (var i = 0; i < count; i++) {
-        this.dots.push({
-          x: Math.random() * this.w,
-          y: Math.random() * this.h,
-          baseAlpha: 0.06 + Math.random() * 0.1,
-          alpha: 0,
-          size: 0.8 + Math.random() * 1.2,
-          vx: (Math.random() - 0.5) * 0.12,
-          vy: (Math.random() - 0.5) * 0.12,
-          bright: false
-        });
-      }
-    },
-
-    draw: function (globalAlpha) {
+    draw: function () {
       var ctx = this.ctx;
+      if (!ctx || this.w === 0) {
+        requestAnimationFrame(function () {
+          grid.draw();
+        });
+        return;
+      }
+
+      ctx.save();
+      ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
       ctx.clearRect(0, 0, this.w, this.h);
 
-      var dots = this.dots;
-      var len = dots.length;
-      var mx = this.mouse.x;
-      var my = this.mouse.y;
-      var cr = this.cursorRadius;
-      var cr2 = cr * cr;
+      // Smooth cursor tracking (lerp)
+      this.mx += (this.tx - this.mx) * 0.1;
+      this.my += (this.ty - this.my) * 0.1;
+      var mx = this.mx,
+        my = this.my;
+      var onScreen = mx > -500 && my > -500;
+      var r = this.radius;
+      var gs = this.size;
+      var r2 = r * r;
 
-      /* Update positions & proximity */
-      for (var i = 0; i < len; i++) {
-        var d = dots[i];
-        d.x += d.vx;
-        d.y += d.vy;
-        if (d.x < 0 || d.x > this.w) d.vx *= -1;
-        if (d.y < 0 || d.y > this.h) d.vy *= -1;
-        d.x = Math.max(0, Math.min(this.w, d.x));
-        d.y = Math.max(0, Math.min(this.h, d.y));
+      if (onScreen) {
+        var sc = Math.floor((mx - r) / gs) - 1;
+        var ec = Math.ceil((mx + r) / gs) + 1;
+        var sr = Math.floor((my - r) / gs) - 1;
+        var er = Math.ceil((my + r) / gs) + 1;
 
-        var dx = d.x - mx;
-        var dy = d.y - my;
-        var dist2 = dx * dx + dy * dy;
-        d.bright = dist2 < cr2;
-        var prox = d.bright ? Math.max(0, 1 - Math.sqrt(dist2) / cr) : 0;
-        d.alpha = d.baseAlpha + prox * 0.55;
-      }
+        // Vertical grid lines — circular crop, radial falloff
+        for (var c = sc; c <= ec; c++) {
+          var x = c * gs;
+          if (x < 0 || x > this.w) continue;
+          var dx = Math.abs(x - mx);
+          if (dx > r) continue;
+          // How far vertically the circle extends at this x
+          var halfChord = Math.sqrt(r2 - dx * dx);
+          var y1 = Math.max(0, my - halfChord);
+          var y2 = Math.min(this.h, my + halfChord);
+          if (y2 <= y1) continue;
+          // Radial falloff: cubic for a soft candle-glow edge
+          var t = 1 - dx / r;
+          t = t * t * t;
+          var alpha = t * 0.22;
+          ctx.strokeStyle = "rgba(46,41,72," + alpha.toFixed(3) + ")";
+          ctx.lineWidth = dx < gs * 0.3 ? 1.4 : 0.9;
+          ctx.beginPath();
+          ctx.moveTo(x, y1);
+          ctx.lineTo(x, y2);
+          ctx.stroke();
+        }
 
-      /* Draw connections */
-      var prox2 = this.proximity * this.proximity;
-      for (var i = 0; i < len; i++) {
-        for (var j = i + 1; j < len; j++) {
-          var dx = dots[i].x - dots[j].x;
-          var dy = dots[i].y - dots[j].y;
-          var d2 = dx * dx + dy * dy;
-          if (d2 < prox2) {
-            var lineA = (1 - d2 / prox2) * 0.12 * globalAlpha;
-            ctx.strokeStyle = 'rgba(52,235,135,' + lineA + ')';
-            ctx.lineWidth = 0.5;
-            ctx.beginPath();
-            ctx.moveTo(dots[i].x, dots[i].y);
-            ctx.lineTo(dots[j].x, dots[j].y);
-            ctx.stroke();
-          }
+        // Horizontal grid lines — circular crop, radial falloff
+        for (var row = sr; row <= er; row++) {
+          var y = row * gs;
+          if (y < 0 || y > this.h) continue;
+          var dy = Math.abs(y - my);
+          if (dy > r) continue;
+          var halfChord = Math.sqrt(r2 - dy * dy);
+          var x1 = Math.max(0, mx - halfChord);
+          var x2 = Math.min(this.w, mx + halfChord);
+          if (x2 <= x1) continue;
+          var t = 1 - dy / r;
+          t = t * t * t;
+          var alpha = t * 0.22;
+          ctx.strokeStyle = "rgba(46,41,72," + alpha.toFixed(3) + ")";
+          ctx.lineWidth = dy < gs * 0.3 ? 1.4 : 0.9;
+          ctx.beginPath();
+          ctx.moveTo(x1, y);
+          ctx.lineTo(x2, y);
+          ctx.stroke();
         }
       }
 
-      /* Draw dots */
-      for (var i = 0; i < len; i++) {
-        var d = dots[i];
-        var a = d.alpha * globalAlpha;
-        if (a < 0.005) continue;
-        ctx.fillStyle = d.bright
-          ? 'rgba(52,235,135,' + a + ')'
-          : 'rgba(143,164,153,' + (a * 0.6) + ')';
-        ctx.beginPath();
-        ctx.arc(d.x, d.y, d.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
+      ctx.restore();
+      requestAnimationFrame(function () {
+        grid.draw();
+      });
+    },
   };
 
-  /* -- Signal Wave removed -- */
-
   /* -- Portrait parallax -- */
-  var portraitInner = document.querySelector('.hero__portrait-inner');
-  var px = 0, py = 0, cx = 0, cy = 0;
+  var portraitInner = document.querySelector(".hero__portrait-inner");
+  var px = 0,
+    py = 0,
+    cx = 0,
+    cy = 0;
 
-  hero.addEventListener('mousemove', function (e) {
+  hero.addEventListener("mousemove", function (e) {
     var r = hero.getBoundingClientRect();
     cx = ((e.clientX - r.left) / r.width - 0.5) * -10;
     cy = ((e.clientY - r.top) / r.height - 0.5) * -10;
   });
 
-  hero.addEventListener('mouseleave', function () {
+  hero.addEventListener("mouseleave", function () {
     cx = 0;
     cy = 0;
   });
@@ -275,7 +416,8 @@
     px += (cx - px) * 0.08;
     py += (cy - py) * 0.08;
     if (portraitInner) {
-      portraitInner.style.transform = 'translate3d(' + px.toFixed(2) + 'px,' + py.toFixed(2) + 'px,0)';
+      portraitInner.style.transform =
+        "translate3d(" + px.toFixed(2) + "px," + py.toFixed(2) + "px,0)";
     }
     requestAnimationFrame(updateParallax);
   }
@@ -296,45 +438,20 @@
     }, delay);
   }
 
-  /* -- Render loop -- */
-  var rafId;
-  var heroVisible = true;
-
-  function renderLoop() {
-    if (heroVisible) {
-      field.draw(1);
-    }
-    rafId = requestAnimationFrame(renderLoop);
-  }
-
-  /* Pause when hero is off-screen or tab is hidden */
-  if ('IntersectionObserver' in window) {
-    var heroIO = new IntersectionObserver(function (entries) {
-      heroVisible = entries[0].isIntersecting;
-    }, { threshold: 0.05 });
-    heroIO.observe(hero);
-  }
-
-  document.addEventListener('visibilitychange', function () {
-    heroVisible = !document.hidden;
-  });
-
   /* -- Kick everything off -- */
-  field.init();
-  renderLoop();
+  grid.init();
+  grid.draw();
   updateParallax();
 
   /* Trigger load choreography */
   requestAnimationFrame(function () {
-    hero.classList.add('is-loaded');
-
+    hero.classList.add("is-loaded");
     /* Animate stat counters */
-    var stats = document.querySelectorAll('.stat__num');
+    var stats = document.querySelectorAll(".stat__num");
     stats.forEach(function (el, i) {
       var target = parseInt(el.dataset.target, 10);
-      var suffix = el.dataset.suffix || '';
+      var suffix = el.dataset.suffix || "";
       animateCounter(el, 0, target, 900, 500 + i * 120, suffix);
     });
   });
-
 })();
