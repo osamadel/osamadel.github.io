@@ -269,7 +269,7 @@
 
   /* ---- Reveal-on-scroll + animate skill fills ---- */
   var revealEls = document.querySelectorAll(
-    ".section__title, .section__kicker, .section__desc, .about__text, .about__pillars li, .skills-board__meta, .skills-domain, .card, .edu__item, .contact__link",
+    ".section__title, .section__kicker, .section__desc, .experience__summary, .about__text, .about__pillars li, .about__recommendations, .skills-board__meta, .skills-domain, .card, .certificate-card, .certificates__header, .edu__item, .contact__link",
   );
   revealEls.forEach(function (el) {
     el.classList.add("reveal");
@@ -335,6 +335,43 @@
       );
       expIO.observe(expSection);
     }
+  }
+
+  /* ---- Certificates carousel ---- */
+  var carousel = document.querySelector("[data-carousel]");
+  var carouselPrev = document.querySelector("[data-carousel-prev]");
+  var carouselNext = document.querySelector("[data-carousel-next]");
+
+  if (carousel && carouselPrev && carouselNext) {
+    var getCarouselStep = function () {
+      return Math.max(carousel.clientWidth * 0.86, 320);
+    };
+
+    var moveCarousel = function (direction) {
+      carousel.scrollBy({
+        left: getCarouselStep() * direction,
+        behavior: reduce ? "auto" : "smooth",
+      });
+    };
+
+    carouselPrev.addEventListener("click", function () {
+      moveCarousel(-1);
+    });
+
+    carouselNext.addEventListener("click", function () {
+      moveCarousel(1);
+    });
+
+    carousel.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        moveCarousel(-1);
+      }
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        moveCarousel(1);
+      }
+    });
   }
 
   /* ============================================================
