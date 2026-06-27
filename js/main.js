@@ -71,15 +71,15 @@
 
   var skillIcons = {
     agents:
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v5"></path><path d="M6.5 8.5 3 12l3.5 3.5"></path><path d="M17.5 8.5 21 12l-3.5 3.5"></path><rect x="7" y="8" width="10" height="8" rx="3"></rect><path d="M9 19h6"></path></svg>',
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M24 8v6"></path><path d="M16.5 15h15a6.5 6.5 0 0 1 0 13h-15a6.5 6.5 0 0 1 0-13Z"></path><path d="M20 21.5h8"></path><path d="M11 18.5 6 21.5l5 3"></path><path d="M37 18.5 42 21.5l-5 3"></path><path d="M20 33h8" opacity="0.5"></path></svg>',
     mlops:
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16.5V7.5"></path><path d="M12 20V4"></path><path d="M20 13.5v-3"></path><circle cx="4" cy="16.5" r="2"></circle><circle cx="12" cy="20" r="2"></circle><circle cx="20" cy="13.5" r="2"></circle><path d="M5.8 15.6 10.3 9"></path><path d="M13.9 16.7 18 14.5"></path></svg>',
-    ml: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5a3 3 0 1 0 0 .01"></path><path d="M6.2 9.2a2.4 2.4 0 1 0 0 .01"></path><path d="M17.8 9.2a2.4 2.4 0 1 0 0 .01"></path><path d="M7.8 10.6 10 8.2"></path><path d="M16.2 10.6 14 8.2"></path><path d="M8.6 15.8h6.8"></path><path d="M6.5 18.5c1.5-2 3.4-3 5.5-3s4 .9 5.5 3"></path></svg>',
-    data: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6.5" rx="6.5" ry="2.5"></ellipse><path d="M5.5 6.5v5c0 1.4 2.9 2.5 6.5 2.5s6.5-1.1 6.5-2.5v-5"></path><path d="M5.5 11.5v5c0 1.4 2.9 2.5 6.5 2.5s6.5-1.1 6.5-2.5v-5"></path></svg>',
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 18a12 12 0 0 1 20-3"></path><path d="M33 13h5v5" opacity="0.55"></path><path d="M32 30a12 12 0 0 1-20 3"></path><path d="M15 35h-5v-5" opacity="0.55"></path><path d="m24 14 7 4v8l-7 4-7-4v-8Z"></path><path d="M24 22v8" opacity="0.55"></path><path d="m17 18 7 4 7-4" opacity="0.55"></path></svg>',
+    ml: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="17" r="3"></circle><circle cx="12" cy="31" r="3"></circle><circle cx="24" cy="24" r="4"></circle><circle cx="36" cy="17" r="3"></circle><circle cx="36" cy="31" r="3"></circle><path d="M14.8 18.4 20 21.2"></path><path d="M14.8 29.6 20 26.8"></path><path d="M28 21.2 33.2 18.4"></path><path d="M28 26.8 33.2 29.6"></path><circle cx="41" cy="24" r="5"></circle><path d="M38.5 24h5" opacity="0.55"></path></svg>',
+    data: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><ellipse cx="18" cy="16" rx="7" ry="3.5"></ellipse><path d="M11 16v13c0 2 3.1 3.5 7 3.5s7-1.5 7-3.5V16"></path><path d="M11 22.5c0 2 3.1 3.5 7 3.5s7-1.5 7-3.5" opacity="0.55"></path><path d="m30 31 4.5-5 4 2.8 5.5-8"></path><circle cx="30" cy="31" r="1.6"></circle><circle cx="34.5" cy="26" r="1.6"></circle><circle cx="38.5" cy="28.8" r="1.6"></circle><circle cx="44" cy="20.8" r="1.6"></circle></svg>',
     engineering:
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h16"></path><path d="M4 16h16"></path><path d="M8 4v16"></path><path d="M16 4v16"></path><path d="M4 12h16"></path></svg>',
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="8" y="15" width="8" height="6" rx="1.6"></rect><rect x="8" y="27" width="8" height="6" rx="1.6"></rect><rect x="32" y="21" width="8" height="6" rx="1.6"></rect><path d="M16 18h8v6h4"></path><path d="M16 30h8v-6h4"></path><circle cx="29" cy="24" r="2.5"></circle></svg>',
     infra:
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8.5A4 4 0 0 1 10 5h6a4 4 0 0 1 0 8H8a3 3 0 0 1-2-4.5"></path><path d="M8 17h8"></path><path d="M9.5 20h5"></path></svg>',
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 27h19a6 6 0 0 0 .5-12 8 8 0 0 0-15-2A6 6 0 0 0 14 27Z"></path><path d="M18 31h14"></path><path d="M15 35h18" opacity="0.55"></path><path d="M22 31v4" opacity="0.55"></path><path d="M27 27v8"></path><path d="M32 31v4" opacity="0.55"></path></svg>',
   };
 
   var stackLayers = [
@@ -96,18 +96,6 @@
       ],
     },
     {
-      name: "Core Data Science",
-      icon: "data",
-      summary:
-        "Python-first analytics, statistics, and time-series work that turns messy data into decisions.",
-      skills: [
-        { name: "Python", level: "Lead", depth: 3 },
-        { name: "Statistics", level: "Lead", depth: 3 },
-        { name: "Time Series", level: "Strong", depth: 2 },
-        { name: "R", level: "Strong", depth: 2 },
-      ],
-    },
-    {
       name: "Machine Learning",
       icon: "ml",
       summary:
@@ -117,6 +105,18 @@
         { name: "CNNs", level: "Lead", depth: 3 },
         { name: "TensorFlow", level: "Strong", depth: 2 },
         { name: "OpenCV", level: "Strong", depth: 2 },
+      ],
+    },
+    {
+      name: "Core Data Science",
+      icon: "data",
+      summary:
+        "Python-first analytics, statistics, and time-series work that turns messy data into decisions.",
+      skills: [
+        { name: "Python", level: "Lead", depth: 3 },
+        { name: "Statistics", level: "Lead", depth: 3 },
+        { name: "Time Series", level: "Strong", depth: 2 },
+        { name: "R", level: "Strong", depth: 2 },
       ],
     },
     {

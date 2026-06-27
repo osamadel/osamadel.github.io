@@ -637,29 +637,36 @@ a {
 .skills-domain__lead {
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 16px;
+    gap: 18px;
     align-items: start;
 }
 
 .skills-domain__icon {
-    display: grid;
-    place-items: center;
-    width: 48px;
-    height: 48px;
-    border-radius: var(--radius);
-    border: 1px solid var(--border-lit);
-    background: linear-gradient(
-        180deg,
-        rgba(var(--accent-rgb), 0.1),
-        rgba(var(--accent-rgb), 0.03)
-    );
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 56px;
+    min-width: 56px;
     color: var(--accent);
+    opacity: 0.96;
     flex-shrink: 0;
+    padding-top: 2px;
 }
 
 .skills-domain__icon svg {
-    width: 22px;
-    height: 22px;
+    width: 56px;
+    height: 56px;
+    overflow: visible;
+}
+
+.skills-domain__icon path,
+.skills-domain__icon circle,
+.skills-domain__icon ellipse,
+.skills-domain__icon rect,
+.skills-domain__icon polyline,
+.skills-domain__icon line,
+.skills-domain__icon polygon {
+    vector-effect: non-scaling-stroke;
 }
 
 .skills-domain__name {
@@ -1455,6 +1462,16 @@ a {
 
     .skill-pill {
         min-width: 100%;
+    }
+
+    .skills-domain__icon {
+        width: 50px;
+        min-width: 50px;
+    }
+
+    .skills-domain__icon svg {
+        width: 50px;
+        height: 50px;
     }
 }
 
