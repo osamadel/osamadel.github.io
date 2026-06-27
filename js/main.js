@@ -191,9 +191,25 @@
     el.classList.add("reveal");
   });
 
-  /* ---- Timeline cascade reveal ---- */
-  var tlEls = document.querySelectorAll(".tl-cascade");
-  var tlSubEls = document.querySelectorAll(".tl-sub-reveal");
+  /* ---- Experience: accordion + reveal ---- */
+  var expEntries = document.querySelectorAll(".exp-entry");
+  var expReveals = document.querySelectorAll(".exp-reveal");
+
+  /* Accordion — one detail panel open at a time */
+  expEntries.forEach(function (entry) {
+    var trigger = entry.querySelector(".exp-entry__trigger");
+    if (!trigger) return;
+    trigger.addEventListener("click", function () {
+      var isOpen = trigger.getAttribute("aria-expanded") === "true";
+      expEntries.forEach(function (other) {
+        var otherTrigger = other.querySelector(".exp-entry__trigger");
+        if (otherTrigger && otherTrigger !== trigger) {
+          otherTrigger.setAttribute("aria-expanded", "false");
+        }
+      });
+      trigger.setAttribute("aria-expanded", isOpen ? "false" : "true");
+    });
+  });
 
   if (reduce || !("IntersectionObserver" in window)) {
     revealEls.forEach(function (el) {
@@ -202,10 +218,7 @@
     document.querySelectorAll(".skill__fill").forEach(function (f) {
       f.style.width = f.dataset.pct + "%";
     });
-    tlEls.forEach(function (el) {
-      el.classList.add("is-visible");
-    });
-    tlSubEls.forEach(function (el) {
+    expReveals.forEach(function (el) {
       el.classList.add("is-visible");
     });
   } else {
@@ -228,26 +241,20 @@
       io.observe(el);
     });
 
-    /* Timeline observer — fires all items when the section enters view, stagger handled by CSS */
-    var timelineSection = document.getElementById("experience");
-    if (timelineSection) {
-      var tlIO = new IntersectionObserver(
+    /* Experience observer — fire all entries when the section enters view */
+    var expSection = document.getElementById("experience");
+    if (expSection && expReveals.length) {
+      var expIO = new IntersectionObserver(
         function (entries) {
           if (!entries[0].isIntersecting) return;
-          tlEls.forEach(function (el) {
+          expReveals.forEach(function (el) {
             el.classList.add("is-visible");
           });
-          /* Sub-cards reveal after a beat — delay so parent cascade has started */
-          setTimeout(function () {
-            tlSubEls.forEach(function (el) {
-              el.classList.add("is-visible");
-            });
-          }, 400);
-          tlIO.unobserve(timelineSection);
+          expIO.unobserve(expSection);
         },
         { threshold: 0.08, rootMargin: "0px 0px -60px 0px" },
       );
-      tlIO.observe(timelineSection);
+      expIO.observe(expSection);
     }
   }
 
