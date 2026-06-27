@@ -177,8 +177,8 @@ A nearly flat system that conveys depth through **tonal layering**, not shadow. 
 - **Style:** Fixed top bar, translucent obsidian (`rgba(7,5,10,0.6)`) with a 14px backdrop blur; a hairline border fades in once scrolled. Links are `Slate Readout` mono-adjacent sans at 15px, brightening to Instrument White on hover. The CTA is a pill (ghost treatment) with a focus glow.
 - **Mobile:** Hamburger toggles a full-width sheet sliding down from under the bar; links stack with hairline dividers.
 
-### Signature: The Skill Bar
-- A labeled row (`skill__name` + mono `skill__level` in Fluorescent Rose) over a thin 5px track. The fill is solid Fluorescent Rose and animates its width from 0 → target on scroll-reveal (`cubic-bezier(.2,.7,.2,1)`, 0.8s). Reduced-motion: bars render at full width instantly.
+### Signature: The Toolkit Board
+- A divided capability board: each domain gets a small line icon, a one-sentence production-oriented summary, and a visible set of skill pills. Every pill shows both a mono mastery label (`Lead`, `Strong`, `Working`) and a three-dot signal meter in Fluorescent Rose, so recruiters can scan depth without relying on hover.
 
 ## 6. Do's and Don'ts
 

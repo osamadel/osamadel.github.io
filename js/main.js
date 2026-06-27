@@ -47,96 +47,180 @@
     });
   }
 
-  /* ---- Skills data → cards ---- */
-  var skills = [
-    {
-      name: "Machine Learning",
-      tools: "scikit-learn · TensorFlow",
-      level: "Expert",
-      pct: 95,
-    },
-    {
-      name: "Python",
-      tools: "pandas · numpy · PySpark",
-      level: "Expert",
-      pct: 95,
-    },
-    {
-      name: "GenAI · Agentic RAG",
-      tools: "Claude · Llama-Index · LangChain",
-      level: "Experienced",
-      pct: 85,
-    },
-    {
-      name: "LLMs · Multi-Agent",
-      tools: "tool use · orchestration",
-      level: "Experienced",
-      pct: 82,
-    },
-    {
-      name: "Statistics",
-      tools: "statsmodels · pingouin",
-      level: "Experienced",
-      pct: 80,
-    },
-    { name: "SQL", tools: "Postgres · Oracle", level: "Experienced", pct: 80 },
-    {
-      name: "Databricks",
-      tools: "Spark · Delta Lake",
-      level: "Skillful",
-      pct: 72,
-    },
-    {
-      name: "MLOps & Git",
-      tools: "CI/CD · CRISP-DM",
-      level: "Skillful",
-      pct: 70,
-    },
-    {
-      name: "Computer Vision",
-      tools: "OpenCV · CNNs",
-      level: "Skillful",
-      pct: 68,
-    },
-    { name: "Numerical Optimization", tools: "", level: "Skillful", pct: 68 },
-    { name: "Linux", tools: "", level: "Skillful", pct: 66 },
-    {
-      name: "Airflow · Kafka",
-      tools: "orchestration · streaming",
-      level: "Growing",
-      pct: 50,
-    },
-    { name: "Time Series", tools: "", level: "Growing", pct: 45 },
-    { name: "AWS", tools: "cloud ML", level: "Growing", pct: 42 },
-    { name: "R", tools: "statistical modeling", level: "Growing", pct: 40 },
-  ];
+  /* ---- Skills: capability board ---- */
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
 
-  var grid = document.getElementById("skillsGrid");
-  if (grid) {
-    grid.innerHTML = skills
-      .map(function (s) {
-        var tools = s.tools
-          ? '<span class="skill__tools">' + s.tools + "</span>"
-          : "";
+  function meterHtml(depth) {
+    return [0, 1, 2]
+      .map(function (step) {
         return (
-          "" +
-          '<div class="skill reveal">' +
-          '<div class="skill__top">' +
-          '<span class="skill__name">' +
-          s.name +
-          tools +
-          "</span>" +
-          '<span class="skill__level">' +
-          s.level +
-          "</span>" +
-          "</div>" +
-          '<div class="skill__bar"><span class="skill__fill" data-pct="' +
-          s.pct +
-          '"></span></div>' +
-          "</div>"
+          '<span class="skill-pill__dot' +
+          (step < depth ? " is-on" : "") +
+          '"></span>'
         );
       })
       .join("");
+  }
+
+  var skillIcons = {
+    agents:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v5"></path><path d="M6.5 8.5 3 12l3.5 3.5"></path><path d="M17.5 8.5 21 12l-3.5 3.5"></path><rect x="7" y="8" width="10" height="8" rx="3"></rect><path d="M9 19h6"></path></svg>',
+    mlops:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16.5V7.5"></path><path d="M12 20V4"></path><path d="M20 13.5v-3"></path><circle cx="4" cy="16.5" r="2"></circle><circle cx="12" cy="20" r="2"></circle><circle cx="20" cy="13.5" r="2"></circle><path d="M5.8 15.6 10.3 9"></path><path d="M13.9 16.7 18 14.5"></path></svg>',
+    ml: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5a3 3 0 1 0 0 .01"></path><path d="M6.2 9.2a2.4 2.4 0 1 0 0 .01"></path><path d="M17.8 9.2a2.4 2.4 0 1 0 0 .01"></path><path d="M7.8 10.6 10 8.2"></path><path d="M16.2 10.6 14 8.2"></path><path d="M8.6 15.8h6.8"></path><path d="M6.5 18.5c1.5-2 3.4-3 5.5-3s4 .9 5.5 3"></path></svg>',
+    data: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6.5" rx="6.5" ry="2.5"></ellipse><path d="M5.5 6.5v5c0 1.4 2.9 2.5 6.5 2.5s6.5-1.1 6.5-2.5v-5"></path><path d="M5.5 11.5v5c0 1.4 2.9 2.5 6.5 2.5s6.5-1.1 6.5-2.5v-5"></path></svg>',
+    engineering:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h16"></path><path d="M4 16h16"></path><path d="M8 4v16"></path><path d="M16 4v16"></path><path d="M4 12h16"></path></svg>',
+    infra:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8.5A4 4 0 0 1 10 5h6a4 4 0 0 1 0 8H8a3 3 0 0 1-2-4.5"></path><path d="M8 17h8"></path><path d="M9.5 20h5"></path></svg>',
+  };
+
+  var stackLayers = [
+    {
+      name: "Generative AI & Agents",
+      icon: "agents",
+      summary:
+        "Agent workflows, RAG systems, and LLM product flows built for real enterprise teams.",
+      skills: [
+        { name: "LLMs", level: "Lead", depth: 3 },
+        { name: "Multi-Agent", level: "Lead", depth: 3 },
+        { name: "LangChain", level: "Strong", depth: 2 },
+        { name: "LlamaIndex", level: "Strong", depth: 2 },
+      ],
+    },
+    {
+      name: "Core Data Science",
+      icon: "data",
+      summary:
+        "Python-first analytics, statistics, and time-series work that turns messy data into decisions.",
+      skills: [
+        { name: "Python", level: "Lead", depth: 3 },
+        { name: "Statistics", level: "Lead", depth: 3 },
+        { name: "Time Series", level: "Strong", depth: 2 },
+        { name: "R", level: "Strong", depth: 2 },
+      ],
+    },
+    {
+      name: "Machine Learning",
+      icon: "ml",
+      summary:
+        "Classical ML and computer-vision systems shaped for production, not just notebooks.",
+      skills: [
+        { name: "scikit-learn", level: "Lead", depth: 3 },
+        { name: "CNNs", level: "Lead", depth: 3 },
+        { name: "TensorFlow", level: "Strong", depth: 2 },
+        { name: "OpenCV", level: "Strong", depth: 2 },
+      ],
+    },
+    {
+      name: "Data Engineering",
+      icon: "engineering",
+      summary:
+        "Pipelines and data movement that keep analytics and ML systems reliable at scale.",
+      skills: [
+        { name: "SQL", level: "Strong", depth: 2 },
+        { name: "PySpark", level: "Strong", depth: 2 },
+        { name: "Airflow", level: "Working", depth: 1 },
+        { name: "Kafka", level: "Working", depth: 1 },
+      ],
+    },
+    {
+      name: "MLOps & Engineering",
+      icon: "mlops",
+      summary:
+        "From experiment to service: versioning, delivery, and deployment discipline around models and agents.",
+      skills: [
+        { name: "CI/CD", level: "Strong", depth: 2 },
+        { name: "Git", level: "Strong", depth: 2 },
+        { name: "ONNX", level: "Strong", depth: 2 },
+        { name: "CRISP-DM", level: "Lead", depth: 3 },
+      ],
+    },
+    {
+      name: "Infrastructure & Platforms",
+      icon: "infra",
+      summary:
+        "Cloud and platform layers used to run production workloads without drama.",
+      skills: [
+        { name: "Linux", level: "Strong", depth: 2 },
+        { name: "AWS", level: "Strong", depth: 2 },
+        { name: "Databricks", level: "Strong", depth: 2 },
+      ],
+    },
+  ];
+
+  var stack = document.getElementById("skillsStack");
+  if (stack) {
+    stack.innerHTML =
+      '<div class="skills-board__meta reveal">' +
+      '<p class="skills-board__summary">Visible by default for quick recruiter scans: each signal shows where I lead, where I ship confidently, and where I work hands-on in production.</p>' +
+      '<div class="skills-board__legend" aria-label="Mastery legend">' +
+      '<span class="skills-legend"><span class="skills-legend__meter">' +
+      meterHtml(3) +
+      "</span><span>Lead</span></span>" +
+      '<span class="skills-legend"><span class="skills-legend__meter">' +
+      meterHtml(2) +
+      "</span><span>Strong</span></span>" +
+      '<span class="skills-legend"><span class="skills-legend__meter">' +
+      meterHtml(1) +
+      "</span><span>Working</span></span>" +
+      "</div>" +
+      "</div>" +
+      stackLayers
+        .map(function (layer) {
+          var skillsHtml = layer.skills
+            .map(function (skill) {
+              return (
+                '<li class="skill-pill" aria-label="' +
+                escapeHtml(skill.name + " — " + skill.level) +
+                '">' +
+                '<span class="skill-pill__name">' +
+                escapeHtml(skill.name) +
+                "</span>" +
+                '<span class="skill-pill__meta">' +
+                '<span class="skill-pill__level">' +
+                escapeHtml(skill.level) +
+                "</span>" +
+                '<span class="skill-pill__meter" aria-hidden="true">' +
+                meterHtml(skill.depth) +
+                "</span>" +
+                "</span>" +
+                "</li>"
+              );
+            })
+            .join("");
+
+          return (
+            '<article class="skills-domain reveal" role="listitem">' +
+            '<div class="skills-domain__lead">' +
+            '<span class="skills-domain__icon" aria-hidden="true">' +
+            (skillIcons[layer.icon] || "") +
+            "</span>" +
+            '<div class="skills-domain__copy">' +
+            '<h3 class="skills-domain__name">' +
+            escapeHtml(layer.name) +
+            "</h3>" +
+            '<p class="skills-domain__summary">' +
+            escapeHtml(layer.summary) +
+            "</p>" +
+            "</div>" +
+            "</div>" +
+            '<ul class="skills-domain__skills" aria-label="' +
+            escapeHtml(layer.name + " skills") +
+            '">' +
+            skillsHtml +
+            "</ul>" +
+            "</article>"
+          );
+        })
+        .join("");
   }
 
   /* ---- Projects Filtering ---- */
@@ -183,9 +267,9 @@
     });
   }
 
-  /* ---- Reveal-on-scroll + animate skill bars ---- */
+  /* ---- Reveal-on-scroll + animate skill fills ---- */
   var revealEls = document.querySelectorAll(
-    ".section__title, .section__kicker, .about__text, .about__pillars li, .skill, .card, .edu__item, .contact__link",
+    ".section__title, .section__kicker, .section__desc, .about__text, .about__pillars li, .skills-board__meta, .skills-domain, .card, .edu__item, .contact__link",
   );
   revealEls.forEach(function (el) {
     el.classList.add("reveal");
@@ -215,9 +299,6 @@
     revealEls.forEach(function (el) {
       el.classList.add("is-visible");
     });
-    document.querySelectorAll(".skill__fill").forEach(function (f) {
-      f.style.width = f.dataset.pct + "%";
-    });
     expReveals.forEach(function (el) {
       el.classList.add("is-visible");
     });
@@ -227,10 +308,6 @@
         entries.forEach(function (entry) {
           if (!entry.isIntersecting) return;
           entry.target.classList.add("is-visible");
-          var fill = entry.target.querySelector
-            ? entry.target.querySelector(".skill__fill")
-            : null;
-          if (fill) fill.style.width = fill.dataset.pct + "%";
           io.unobserve(entry.target);
         });
       },

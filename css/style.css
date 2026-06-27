@@ -565,63 +565,182 @@ a {
     font-size: 0.88rem;
 }
 
-/* Skills */
-.skills__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 14px;
+/* ── Skills: capability board ── */
+.skills__desc {
+    max-width: 58ch;
 }
-.skill {
-    background: var(--surface);
+
+.skills-board {
+    display: grid;
+    gap: 6px;
+}
+
+.skills-board__meta {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) auto;
+    gap: 18px 24px;
+    align-items: end;
+    padding-bottom: 26px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 6px;
+}
+
+.skills-board__summary {
+    color: var(--muted);
+    font-size: 0.98rem;
+    max-width: 62ch;
+    text-wrap: pretty;
+}
+
+.skills-board__legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.skills-legend {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 999px;
     border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 18px 20px;
+    background: var(--surface);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.skills-legend__meter,
+.skill-pill__meter {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.skills-domain {
+    display: grid;
+    grid-template-columns: minmax(240px, 0.9fr) minmax(0, 1.5fr);
+    gap: 22px 28px;
+    align-items: start;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.skills-domain:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+.skills-domain__lead {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    align-items: start;
+}
+
+.skills-domain__icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-lit);
+    background: linear-gradient(
+        180deg,
+        rgba(var(--accent-rgb), 0.1),
+        rgba(var(--accent-rgb), 0.03)
+    );
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+.skills-domain__icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.skills-domain__name {
+    font-size: 1.04rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+}
+
+.skills-domain__summary {
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    max-width: 34ch;
+    text-wrap: pretty;
+}
+
+.skills-domain__skills {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.skill-pill {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 52px;
+    padding: 12px 14px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    min-width: min(100%, 230px);
+    flex: 1 1 180px;
     transition:
         border-color 0.25s,
-        background 0.25s;
+        background 0.25s,
+        transform 0.25s var(--ease-out-quint);
 }
-.skill:hover {
+
+.skill-pill:hover {
     border-color: var(--border-lit);
     background: var(--surface-2);
+    transform: translateY(-1px);
 }
-.skill__top {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 10px;
-    margin-bottom: 12px;
-}
-.skill__name {
+
+.skill-pill__name {
+    font-size: 0.92rem;
     font-weight: 600;
-    font-size: 0.96rem;
+    color: var(--text);
+    letter-spacing: -0.01em;
 }
-.skill__tools {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--faint);
-    margin-top: 2px;
+
+.skill-pill__meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
 }
-.skill__level {
+
+.skill-pill__level {
     font-family: var(--font-mono);
-    font-size: 0.72rem;
+    font-size: 0.8rem;
     color: var(--accent);
     white-space: nowrap;
 }
-.skill__bar {
-    height: 5px;
+
+.skill-pill__dot {
+    width: 8px;
+    height: 8px;
     border-radius: 999px;
-    background: var(--surface-2);
-    overflow: hidden;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-lit);
+    background: rgba(var(--accent-rgb), 0.08);
 }
-.skill__fill {
-    display: block;
-    height: 100%;
-    border-radius: 999px;
+
+.skill-pill__dot.is-on {
     background: var(--accent);
-    width: 0;
-    transition: width 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+    border-color: transparent;
+    box-shadow: 0 0 0 1px rgba(var(--accent-rgb), 0.14);
 }
 
 /* ───────── Experience — Interactive Impact Timeline ───────── */
@@ -1262,6 +1381,13 @@ a {
         grid-template-columns: 1fr;
         gap: 24px;
     }
+    .skills-board__meta,
+    .skills-domain {
+        grid-template-columns: 1fr;
+    }
+    .skills-board__legend {
+        justify-content: flex-start;
+    }
     .edu {
         grid-template-columns: 1fr;
     }
@@ -1325,6 +1451,10 @@ a {
         display: inline-flex;
         align-items: center;
         min-height: 44px;
+    }
+
+    .skill-pill {
+        min-width: 100%;
     }
 }
 
