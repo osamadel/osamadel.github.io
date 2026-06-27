@@ -289,9 +289,11 @@
         var otherTrigger = other.querySelector(".exp-entry__trigger");
         if (otherTrigger && otherTrigger !== trigger) {
           otherTrigger.setAttribute("aria-expanded", "false");
+          other.classList.remove("is-open");
         }
       });
       trigger.setAttribute("aria-expanded", isOpen ? "false" : "true");
+      entry.classList.toggle("is-open", !isOpen);
     });
   });
 

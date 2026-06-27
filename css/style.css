@@ -772,9 +772,26 @@ a {
     position: relative;
     padding-left: 28px;
     border-bottom: 1px solid var(--border);
+    transition:
+        margin 0.25s ease,
+        padding-right 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background-color 0.25s ease;
 }
 .exp-entry:last-child {
     border-bottom: 0;
+}
+.exp-entry.is-open {
+    margin: 10px 0;
+    padding-right: 18px;
+    background: rgba(16, 14, 26, 0.82);
+    border: 1px solid var(--border-lit);
+    border-radius: var(--radius-md);
+    box-shadow: 0 24px 60px -20px rgba(2, 2, 6, 0.42);
+}
+.exp-entry.is-open:last-child {
+    border-bottom: 1px solid var(--border-lit);
 }
 
 /* Timeline node dot */
@@ -886,33 +903,32 @@ a {
 }
 
 /* ── Active state glow ── */
-.exp-entry__trigger[aria-expanded="true"] {
-    background: var(--surface);
+.exp-entry.is-open .exp-entry__trigger {
+    background: transparent;
 }
 
 /* ── Detail panel ── */
 .exp-entry__detail {
-    display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows 0.4s var(--ease-out-quint);
+    max-height: 0;
+    opacity: 0;
     overflow: hidden;
+    background: transparent;
+    transition:
+        max-height 0.45s var(--ease-out-quint),
+        opacity 0.2s ease;
 }
 .exp-entry__trigger[aria-expanded="true"] + .exp-entry__detail {
-    grid-template-rows: 1fr;
+    max-height: 1600px;
+    opacity: 1;
 }
 
 .exp-entry__detail-inner {
-    min-height: 0;
-    overflow: hidden;
-    padding: 0 4px 0 0;
+    padding: 0 0 28px 0;
 }
 .exp-entry__detail ul {
     list-style: none;
     display: grid;
     gap: 10px;
-}
-.exp-entry__detail-inner > ul {
-    padding-bottom: 28px;
 }
 .exp-entry__detail ul li {
     position: relative;
@@ -939,54 +955,72 @@ a {
     margin-bottom: 18px;
 }
 
-/* ── Sub-role panels ── */
-.exp-entry__sub {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 16px 18px;
-    margin-bottom: 12px;
+/* ── Internal role / client groups ── */
+.exp-entry__role-block + .exp-entry__role-block {
+    margin-top: 22px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
 }
-.exp-entry__sub:last-child {
-    margin-bottom: 28px;
-}
-.exp-entry__sub-head {
+.exp-entry__role-head,
+.exp-entry__client-head {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
     gap: 12px;
     flex-wrap: wrap;
-    margin-bottom: 10px;
 }
-.exp-entry__sub-head h4 {
-    font-size: 0.98rem;
-    color: var(--muted);
-    font-weight: 600;
+.exp-entry__role-head {
+    margin-bottom: 12px;
 }
-.exp-entry__sub-head span {
+.exp-entry__role-head h4 {
+    font-size: 1rem;
+    color: var(--text);
+    font-weight: 700;
+}
+.exp-entry__role-head span,
+.exp-entry__client-head span {
     font-family: var(--font-mono);
     font-size: 0.75rem;
     color: var(--faint);
 }
-.exp-entry__sub ul {
+.exp-entry__role-block > ul {
+    margin: 0;
+}
+.exp-entry__role-block .exp-entry__note {
+    margin-bottom: 14px;
+}
+.exp-entry__client-group + .exp-entry__client-group {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+.exp-entry__client-head {
+    margin-bottom: 10px;
+}
+.exp-entry__client-head h5 {
+    font-size: 0.96rem;
+    color: var(--muted);
+    font-weight: 600;
+}
+.exp-entry__client-group ul {
     list-style: none;
     display: grid;
     gap: 8px;
 }
-.exp-entry__sub ul li {
+.exp-entry__client-group ul li {
     position: relative;
     padding-left: 18px;
     color: var(--muted);
     font-size: 0.94rem;
     max-width: 72ch;
 }
-.exp-entry__sub ul li::before {
+.exp-entry__client-group ul li::before {
     content: "▸";
     position: absolute;
     left: 0;
     color: var(--accent);
 }
-.exp-entry__sub ul li strong {
+.exp-entry__client-group ul li strong {
     color: var(--text);
 }
 
@@ -1450,7 +1484,8 @@ a {
         flex-direction: column;
         gap: 2px;
     }
-    .exp-entry__sub-head {
+    .exp-entry__role-head,
+    .exp-entry__client-head {
         flex-direction: column;
         gap: 2px;
     }
