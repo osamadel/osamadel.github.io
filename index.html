@@ -1,336 +1,1576 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Osama Feshier — Senior Data Scientist &amp; AI Engineer</title>
-  <meta name="description" content="Osama Feshier — Senior Data Scientist and AI Engineer building production GenAI, agentic systems, and ML at scale. 6+ years across consulting and industry." />
-  <meta name="author" content="Osama Feshier" />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Osama Feshier — Senior Data Scientist &amp; AI Engineer</title>
+        <meta
+            name="description"
+            content="Osama Feshier — Senior Data Scientist and AI Engineer building production GenAI, agentic systems, and ML at scale. 8+ years across consulting and industry."
+        />
+        <meta name="author" content="Osama Feshier" />
 
-  <!-- Open Graph -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Osama Feshier — Senior Data Scientist &amp; AI Engineer" />
-  <meta property="og:description" content="Building production GenAI, agentic systems, and ML at scale. 6+ years across consulting and industry." />
-  <meta property="og:image" content="img/me.jpg" />
-  <meta property="og:image:width" content="760" />
-  <meta property="og:image:height" content="768" />
+        <!-- Open Graph -->
+        <meta property="og:type" content="website" />
+        <meta
+            property="og:title"
+            content="Osama Feshier — Senior Data Scientist &amp; AI Engineer"
+        />
+        <meta
+            property="og:description"
+            content="Building production GenAI, agentic systems, and ML at scale. 8+ years across consulting and industry."
+        />
+        <meta property="og:image" content="img/newme.jpeg" />
+        <meta property="og:image:width" content="960" />
+        <meta property="og:image:height" content="960" />
 
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Osama Feshier — Senior Data Scientist &amp; AI Engineer" />
-  <meta name="twitter:description" content="Building production GenAI, agentic systems, and ML at scale. 6+ years across consulting and industry." />
-  <meta name="twitter:image" content="img/me.jpg" />
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+            name="twitter:title"
+            content="Osama Feshier — Senior Data Scientist &amp; AI Engineer"
+        />
+        <meta
+            name="twitter:description"
+            content="Building production GenAI, agentic systems, and ML at scale. 8+ years across consulting and industry."
+        />
+        <meta name="twitter:image" content="img/newme.jpeg" />
 
-  <link rel="icon" type="image/png" href="img/logo.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
-</head>
-<body>
-  <a class="skip-link" href="#main">Skip to content</a>
+        <link rel="icon" type="image/svg+xml" href="img/favicon.svg" />
+        <link rel="icon" type="image/png" href="img/favicon.png" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="css/style.css" />
+    </head>
+    <body>
+        <a class="skip-link" href="#main">Skip to content</a>
 
-  <!-- ░░ Navigation ░░ -->
-  <header class="nav" id="nav">
-    <div class="container nav__inner">
-      <a href="#top" class="nav__brand">
-        <span class="nav__brand-mark">OF</span>
-        <span class="nav__brand-text">Osama&nbsp;Feshier</span>
-      </a>
-      <nav class="nav__links" id="navMenu" aria-label="Primary">
-        <a href="#about">About</a>
-        <a href="#skills">Skills</a>
-        <a href="#experience">Experience</a>
-        <a href="#projects">Projects</a>
-        <a href="#education">Education</a>
-        <a href="#contact" class="nav__cta">Contact</a>
-      </nav>
-      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-controls="navMenu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </header>
-
-  <main id="main">
-    <!-- ░░ Hero ░░ -->
-    <section class="hero" id="top">
-      <div class="hero__grid-bg" aria-hidden="true"></div>
-      <canvas class="hero__canvas" id="hero-field" aria-hidden="true"></canvas>
-      <div class="container hero__inner">
-        <div class="hero__copy">
-          <p class="hero__eyebrow" style="--d: 0.05s"><span class="dot"></span> Senior Data Scientist · AI Engineer</p>
-          <h1 class="hero__title" id="hero-title">
-            <span class="hero__word">I build</span>
-            <span class="hero__word hero__word--accent"><span class="accent">agentic systems</span></span>
-            <span class="hero__word">that turn data</span>
-            <span class="hero__word">into decisions.</span>
-          </h1>
-          <p class="hero__lead" style="--d: 0.25s">
-            6+ years shipping production ML and GenAI — from predictive maintenance at telecom scale
-            to <strong>multi-agent RAG pipelines</strong> that replaced hours of manual analysis with
-            millisecond inference.
-          </p>
-          <div class="hero__actions" style="--d: 0.35s">
-            <a href="#projects" class="btn btn--primary">View Projects</a>
-            <a href="#contact" class="btn btn--ghost">Get in Touch</a>
-          </div>
-          <ul class="hero__stats" style="--d: 0.45s">
-            <li><span class="stat__num" data-target="6" data-suffix="+">0</span><span class="stat__label">Years in DS / ML</span></li>
-            <li><span class="stat__num" data-target="27" data-suffix="%">0</span><span class="stat__label">Ticket reduction via ML</span></li>
-            <li><span class="stat__num" data-target="12" data-suffix="%">0</span><span class="stat__label">Revenue uplift from predictive ML</span></li>
-          </ul>
-        </div>
-        <div class="hero__visual">
-          <div class="hero__portrait">
-            <div class="hero__portrait-inner">
-              <picture>
-                <source srcset="img/me.webp" type="image/webp" />
-                <img src="img/me.jpg" alt="Osama Feshier, smiling — black-and-white portrait"
-                     width="760" height="768" decoding="async" fetchpriority="high" />
-              </picture>
+        <!-- ░░ Navigation ░░ -->
+        <header class="nav" id="nav">
+            <div class="container nav__inner">
+                <a href="#top" class="nav__brand">
+                    <span class="nav__brand-mark">OF</span>
+                    <span class="nav__brand-text">Osama&nbsp;Feshier</span>
+                </a>
+                <nav class="nav__links" id="navMenu" aria-label="Primary">
+                    <a href="#about">About</a>
+                    <a href="#skills">Skills</a>
+                    <a href="#experience">Experience</a>
+                    <a href="#projects">Projects</a>
+                    <a href="#education">Education</a>
+                    <a href="#contact" class="nav__cta">Contact</a>
+                </nav>
+                <button
+                    class="nav__toggle"
+                    id="navToggle"
+                    aria-label="Toggle menu"
+                    aria-controls="navMenu"
+                    aria-expanded="false"
+                >
+                    <span></span><span></span><span></span>
+                </button>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
+        </header>
 
-    <!-- ░░ About ░░ -->
-    <section class="section" id="about">
-      <div class="container">
-        <p class="section__kicker">// about</p>
-        <h2 class="section__title">Data into value, end to end</h2>
-        <div class="about__grid">
-          <p class="about__text">
-            I'm a senior data scientist and AI engineer who turns messy operational data into shipped
-            systems that move KPIs. My core toolkit is Python, probability and statistics, classical and
-            deep learning — but lately I design <strong>GenAI strategies and agentic RAG pipelines</strong>
-            for enterprise clients, orchestrating Claude and Llama-Index to replace hours of manual analysis
-            with millisecond inference. I've led the full lifecycle from CRISP-DM discovery through MLOps
-            deployment, and I share what I learn through video tutorials on YouTube.
-          </p>
-          <ul class="about__pillars">
-            <li><span class="pillar__icon" aria-hidden="true">◇</span><div><strong>Applied ML</strong><p>Models that ship and move real KPIs.</p></div></li>
-            <li><span class="pillar__icon" aria-hidden="true">◈</span><div><strong>GenAI &amp; Agents</strong><p>Agentic RAG, tool use, and Claude-driven pipelines.</p></div></li>
-            <li><span class="pillar__icon" aria-hidden="true">◆</span><div><strong>MLOps at Scale</strong><p>CRISP-DM to production on Databricks and beyond.</p></div></li>
-          </ul>
-        </div>
-      </div>
-    </section>
+        <main id="main">
+            <!-- ░░ Hero ░░ -->
+            <section class="hero" id="top">
+                <div class="hero__grid-bg" aria-hidden="true"></div>
+                <canvas
+                    class="hero__canvas"
+                    id="hero-field"
+                    aria-hidden="true"
+                ></canvas>
+                <div class="container hero__inner">
+                    <div class="hero__copy">
+                        <p class="hero__greeting" style="--d: 0s">
+                            Hi, I'm Osama.
+                        </p>
+                        <p class="hero__eyebrow" style="--d: 0.08s">
+                            <span class="dot"></span> Senior Data Scientist · AI
+                            Engineer
+                        </p>
+                        <h1 class="hero__title" id="hero-title">
+                            <span class="hero__word">I build</span>
+                            <span class="hero__word hero__word--accent"
+                                ><span class="accent"
+                                    >agentic systems</span
+                                ></span
+                            >
+                            <span class="hero__word">that turn data</span>
+                            <span class="hero__word">into decisions.</span>
+                        </h1>
+                        <p class="hero__lead" style="--d: 0.25s">
+                            Over 8+ years I've gone from training CNNs on
+                            ID-card numerals to architecting
+                            <strong>multi-agent systems</strong> that serve 300
+                            people in real time. I care about one thing: turning
+                            messy operational data into shipped systems that
+                            move real numbers.
+                        </p>
+                        <div class="hero__actions" style="--d: 0.35s">
+                            <a href="#projects" class="btn btn--primary"
+                                >View Projects</a
+                            >
+                            <a href="#contact" class="btn btn--ghost"
+                                >Get in Touch</a
+                            >
+                        </div>
+                        <ul class="hero__stats" style="--d: 0.45s">
+                            <li>
+                                <span
+                                    class="stat__num"
+                                    data-target="8"
+                                    data-suffix="+"
+                                    >0</span
+                                ><span class="stat__label"
+                                    >Years in DS&nbsp;/&nbsp;ML</span
+                                >
+                            </li>
+                            <li>
+                                <span
+                                    class="stat__num"
+                                    data-target="5"
+                                    data-suffix="+"
+                                    >0</span
+                                ><span class="stat__label"
+                                    >Agentic systems shipped to enterprise</span
+                                >
+                            </li>
+                            <li>
+                                <span
+                                    class="stat__num"
+                                    data-target="300"
+                                    data-suffix=""
+                                    >0</span
+                                ><span class="stat__label"
+                                    >Concurrent users served in production</span
+                                >
+                            </li>
+                            <li>
+                                <span
+                                    class="stat__num"
+                                    data-target="75"
+                                    data-suffix="%+"
+                                    >0</span
+                                ><span class="stat__label"
+                                    >Faster MVP delivery via spec-driven
+                                    dev</span
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="hero__visual">
+                        <div class="hero__portrait">
+                            <div class="hero__portrait-inner">
+                                <picture>
+                                    <img
+                                        src="img/newme.jpeg"
+                                        alt="Osama Adel — black-and-white portrait, smiling at camera"
+                                        width="960"
+                                        height="960"
+                                        decoding="async"
+                                        fetchpriority="high"
+                                    />
+                                </picture>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-    <!-- ░░ Skills ░░ -->
-    <section class="section section--alt" id="skills">
-      <div class="container">
-        <p class="section__kicker">// skills</p>
-        <h2 class="section__title">The toolkit</h2>
-        <div class="skills__grid" id="skillsGrid">
-          <!-- populated by JS for clean markup -->
-        </div>
-      </div>
-    </section>
-
-    <!-- ░░ Experience ░░ -->
-    <section class="section" id="experience">
-      <div class="container">
-        <p class="section__kicker">// experience</p>
-        <h2 class="section__title">Where I've made an impact</h2>
-
-        <div class="timeline">
-          <article class="tl tl-cascade" style="--i:0">
-            <div class="tl__marker"></div>
-            <div class="tl__head">
-              <h3>Senior Data Scientist <span class="tl__at">@ <a href="https://www.epam.com" target="_blank" rel="noopener">EPAM Systems</a></span></h3>
-              <span class="tl__date">Aug 2025 — Present</span>
+            <!-- ░░ Certs Strip ░░ -->
+            <div class="certs-strip" aria-label="Certifications">
+                <div class="certs__overflow">
+                    <div class="certs__track">
+                        <!-- set 1 -->
+                        <div class="cert__item">
+                            <span class="cert__mark">◆</span
+                            ><span class="cert__name"
+                                >Claude Certified Architect — Foundations Early
+                                Adopter<span class="cert__issuer"
+                                    >Anthropic</span
+                                ></span
+                            >
+                        </div>
+                        <div class="cert__item">
+                            <span class="cert__mark">◆</span
+                            ><span class="cert__name"
+                                >CDMP Certification — Associate<span
+                                    class="cert__issuer"
+                                    >DAMA International</span
+                                ></span
+                            >
+                        </div>
+                        <div class="cert__item">
+                            <span class="cert__mark">◆</span
+                            ><span class="cert__name"
+                                >AWS Certified Data Analytics — Specialty<span
+                                    class="cert__issuer"
+                                    >Amazon Web Services</span
+                                ></span
+                            >
+                        </div>
+                        <div class="cert__item">
+                            <span class="cert__mark">◆</span
+                            ><span class="cert__name"
+                                >Teaching The Teacher (TTT)<span
+                                    class="cert__issuer"
+                                    >EPITA</span
+                                ></span
+                            >
+                        </div>
+                        <div class="cert__item">
+                            <span class="cert__mark">◆</span
+                            ><span class="cert__name"
+                                >McKinsey Forward Program<span
+                                    class="cert__issuer"
+                                    >McKinsey &amp; Company</span
+                                ></span
+                            >
+                        </div>
+                        <div class="cert__item">
+                            <span class="cert__mark">◆</span
+                            ><span class="cert__name"
+                                >Applied Data Science Lab<span
+                                    class="cert__issuer"
+                                    >WorldQuant University</span
+                                ></span
+                            >
+                        </div>
+                        <!-- set 2 — duplicate for seamless loop -->
+                        <div class="cert__item" aria-hidden="true">
+                            <span class="cert__mark">◆</span
+                            ><span class="cert__name"
+                                >Claude Certified Architect — Foundations Early
+                                Adopter<span class="cert__issuer"
+                                    >Anthropic</span
+                                ></span
+                            >
+                        </div>
+                        <div class="cert__item" aria-hidden="true">
+                            <span class="cert__mark">◆</span
+                            ><span class="cert__name"
+                                >CDMP Certification — Associate<span
+                                    class="cert__issuer"
+                                    >DAMA International</span
+                                ></span
+                            >
+                        </div>
+                        <div class="cert__item" aria-hidden="true">
+                            <span class="cert__mark">◆</span
+                            ><span class="cert__name"
+                                >AWS Certified Data Analytics — Specialty<span
+                                    class="cert__issuer"
+                                    >Amazon Web Services</span
+                                ></span
+                            >
+                        </div>
+                        <div class="cert__item" aria-hidden="true">
+                            <span class="cert__mark">◆</span
+                            ><span class="cert__name"
+                                >Teaching The Teacher (TTT)<span
+                                    class="cert__issuer"
+                                    >EPITA</span
+                                ></span
+                            >
+                        </div>
+                        <div class="cert__item" aria-hidden="true">
+                            <span class="cert__mark">◆</span
+                            ><span class="cert__name"
+                                >McKinsey Forward Program<span
+                                    class="cert__issuer"
+                                    >McKinsey &amp; Company</span
+                                ></span
+                            >
+                        </div>
+                        <div class="cert__item" aria-hidden="true">
+                            <span class="cert__mark">◆</span
+                            ><span class="cert__name"
+                                >Applied Data Science Lab<span
+                                    class="cert__issuer"
+                                    >WorldQuant University</span
+                                ></span
+                            >
+                        </div>
+                    </div>
+                </div>
             </div>
-            <p class="tl__note">Al Khobar, Saudi Arabia</p>
-            <ul>
-              <li>Designing GenAI strategies and building agentic RAG pipelines for enterprise clients — replacing hours of manual analysis with <strong>millisecond inference</strong>.</li>
-              <li>Orchestrating <strong>Claude and Llama-Index</strong> multi-agent workflows in production, from CRISP-DM discovery through deployment.</li>
-            </ul>
-          </article>
 
-          <article class="tl tl-cascade" style="--i:1">
-            <div class="tl__marker"></div>
-            <div class="tl__head">
-              <h3>Lead Data Scientist <span class="tl__at">@ <a href="https://www.tawal.com.sa" target="_blank" rel="noopener">TAWAL</a></span></h3>
-              <span class="tl__date">Apr 2024 — Jul 2025</span>
-            </div>
-            <p class="tl__note">Riyadh, Saudi Arabia</p>
-            <ul>
-              <li>Led the company's GenAI strategy — built an <strong>agentic RAG system</strong> using Claude and Llama-Index to automate telecom tower analysis workflows.</li>
-              <li>Applied CRISP-DM methodology across discovery, development, and production deployment of ML solutions.</li>
-            </ul>
-          </article>
+            <!-- ░░ About ░░ -->
+            <section class="section" id="about">
+                <div class="container">
+                    <p class="section__kicker">// about</p>
+                    <h2 class="section__title">Data into value, end to end</h2>
+                    <div class="about__grid">
+                        <p class="about__text">
+                            I'm a Senior Data Scientist and AI Engineer
+                            currently at EPAM Systems, where I design and ship
+                            <strong>multi-agent systems</strong> for enterprise
+                            clients across the Middle East and Europe. Before
+                            that I spent four years at TAWAL building the
+                            company's GenAI stack from scratch — from digitizing
+                            5&nbsp;TB of scanned documents to deploying a
+                            streaming multi-agent assistant used by
+                            <strong>300 people daily</strong>. My work spans the
+                            full arc: from publishing research on gait
+                            recognition to deploying containerized ONNX
+                            microservices for field technicians in the field.
+                        </p>
+                        <ul class="about__pillars">
+                            <li>
+                                <span class="pillar__icon" aria-hidden="true"
+                                    >◈</span
+                                >
+                                <div>
+                                    <strong>GenAI &amp; Agents</strong>
+                                    <p>
+                                        Architected a multi-agent RAG system for
+                                        300 daily users: Claude + LlamaIndex +
+                                        Azure OpenAI, RBAC, live monitoring.
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="pillar__icon" aria-hidden="true"
+                                    >◇</span
+                                >
+                                <div>
+                                    <strong>Applied ML</strong>
+                                    <p>
+                                        27% ticket reduction. 72% outage
+                                        detection. Models trained on telecom
+                                        tower data and shipped to production.
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="pillar__icon" aria-hidden="true"
+                                    >◆</span
+                                >
+                                <div>
+                                    <strong>MLOps at Scale</strong>
+                                    <p>
+                                        From notebook to containerized ONNX
+                                        microservice: full CI/CD and Databricks
+                                        deployment, end to end in production.
+                                    </p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
 
-          <article class="tl tl-cascade" style="--i:2">
-            <div class="tl__marker"></div>
-            <div class="tl__head">
-              <h3>Data Scientist <span class="tl__at">@ <a href="https://www.tawal.com.sa" target="_blank" rel="noopener">TAWAL</a></span></h3>
-              <span class="tl__date">Aug 2021 — Mar 2024</span>
-            </div>
-            <p class="tl__note">Worked for TAWAL via three outsourcing companies.</p>
+            <!-- ░░ Skills ░░ -->
+            <section class="section section--alt" id="skills">
+                <div class="container">
+                    <p class="section__kicker">// skills</p>
+                    <h2 class="section__title">The toolkit</h2>
+                    <p class="section__desc skills__desc">
+                        The tools I reach for in production, with visible depth
+                        by skill — no hover hunting required.
+                    </p>
+                    <div
+                        class="skills-board"
+                        id="skillsStack"
+                        role="list"
+                        aria-label="Technology toolkit and mastery by domain"
+                    >
+                        <!-- populated by JS -->
+                    </div>
+                </div>
+            </section>
 
-            <div class="tl__sub tl-sub-reveal" style="--di:0">
-              <div class="tl__sub-head"><h4>Solutions by STC</h4><span>Riyadh, SA · Aug 2022 — Mar 2024</span></div>
-              <ul>
-                <li>Achieved a <strong>27% greater reduction</strong> in tickets from the Tower Management System by using ML to mine associations in historical alarm data, surpassing the system's existing rules.</li>
-                <li>Generated a <strong>12% revenue increase</strong> by applying predictive maintenance models to telecom tower data — preventing outages before they cost money.</li>
-                <li>Built a PoC to optimize technician ticket assignment — balancing workload, geographic proximity, and skillsets — moving the company from manual to automated allocation.</li>
-                <li>Partnered with infrastructure to overhaul the AI architecture, enabling a complete <strong>MLOps lifecycle</strong>.</li>
-                <li>Developed a PoC QA chatbot answering questions over the company knowledge base using <strong>LLMs, LangChain, and a vector database</strong>.</li>
-              </ul>
-            </div>
-            <div class="tl__sub tl-sub-reveal" style="--di:1">
-              <div class="tl__sub-head"><h4>Norconsult Telematics</h4><span>Remote · Jan 2022 — Aug 2022</span></div>
-              <ul>
-                <li>Built a predictive-maintenance application with a <strong>72% outage-detection rate</strong> for telecom sites.</li>
-                <li>Operated Python ETL cron jobs feeding destination databases for BI visualization in Qlik Sense.</li>
-              </ul>
-            </div>
-            <div class="tl__sub tl-sub-reveal" style="--di:2">
-              <div class="tl__sub-head"><h4>MasterWorks</h4><span>Remote · Aug 2021 — Jan 2022</span></div>
-              <ul>
-                <li>Applied analysis, ML, and statistical testing to asset recommendation, performance evaluation, and replacement alerting to improve operational efficiency.</li>
-              </ul>
-            </div>
-          </article>
+            <!-- ░░ Experience ░░ -->
+            <section class="section" id="experience">
+                <div class="container">
+                    <h2 class="section__title">Where I've made an impact</h2>
+                    <p class="section__desc">
+                        Each number is a real result. Tap to see how it shipped.
+                    </p>
 
-          <article class="tl tl-cascade" style="--i:3">
-            <div class="tl__marker"></div>
-            <div class="tl__head">
-              <h3>Research Assistant <span class="tl__at">@ <a href="https://www.ejust.edu.eg/" target="_blank" rel="noopener">Egypt-Japan University of Science &amp; Technology</a></span></h3>
-              <span class="tl__date">Sep 2019 — Sep 2021</span>
+                    <div class="exp-timeline">
+                        <!-- EPAM -->
+                        <article class="exp-entry exp-reveal" style="--i: 0">
+                            <button
+                                class="exp-entry__trigger"
+                                aria-expanded="false"
+                            >
+                                <div class="exp-entry__metric">
+                                    <span class="exp-entry__number">75%+</span>
+                                    <span class="exp-entry__label"
+                                        >faster delivery</span
+                                    >
+                                </div>
+                                <div class="exp-entry__body">
+                                    <div class="exp-entry__head">
+                                        <h3 class="exp-entry__role">
+                                            Senior Data Scientist
+                                        </h3>
+                                        <span class="exp-entry__at"
+                                            >@ EPAM Systems</span
+                                        >
+                                    </div>
+                                    <span class="exp-entry__meta"
+                                        >Al Khobar, Saudi Arabia · Aug 2025 —
+                                        Present</span
+                                    >
+                                </div>
+                                <span
+                                    class="exp-entry__indicator"
+                                    aria-hidden="true"
+                                >
+                                    <svg
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 16 16"
+                                        fill="none"
+                                    >
+                                        <path
+                                            d="M4 6l4 4 4-4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="exp-entry__detail">
+                                <div class="exp-entry__detail-inner">
+                                    <ul>
+                                        <li>
+                                            Key Engineer across
+                                            <strong
+                                                >three Oil &amp; Gas
+                                                engagements</strong
+                                            >
+                                            spanning the Middle East and Europe
+                                            — architecting AI multi-agent
+                                            systems that automated
+                                            domain-specific business workflows
+                                            for enterprise clients.
+                                        </li>
+                                        <li>
+                                            Adopted
+                                            <strong
+                                                >Spec-driven Development</strong
+                                            >, shipping production-quality MVPs
+                                            in days and cutting typical delivery
+                                            timelines by 75%+.
+                                        </li>
+                                        <li>
+                                            Built agentic systems to drive
+                                            complex, domain-specific business
+                                            logic end-to-end — from
+                                            natural-language intake through tool
+                                            orchestration to structured output
+                                            delivery.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- TAWAL -->
+                        <article class="exp-entry exp-reveal" style="--i: 1">
+                            <button
+                                class="exp-entry__trigger"
+                                aria-expanded="false"
+                            >
+                                <div class="exp-entry__metric">
+                                    <span class="exp-entry__number">300</span>
+                                    <span class="exp-entry__label"
+                                        >concurrent users</span
+                                    >
+                                </div>
+                                <div class="exp-entry__body">
+                                    <div class="exp-entry__head">
+                                        <h3 class="exp-entry__role">
+                                            Data Scientist → Lead Data Scientist
+                                        </h3>
+                                        <span class="exp-entry__at"
+                                            >@ TAWAL</span
+                                        >
+                                    </div>
+                                    <span class="exp-entry__meta"
+                                        >Riyadh, Saudi Arabia · Sep 2021 —
+                                        Present</span
+                                    >
+                                </div>
+                                <span
+                                    class="exp-entry__indicator"
+                                    aria-hidden="true"
+                                >
+                                    <svg
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 16 16"
+                                        fill="none"
+                                    >
+                                        <path
+                                            d="M4 6l4 4 4-4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="exp-entry__detail">
+                                <div class="exp-entry__detail-inner">
+                                    <div class="exp-entry__role-block">
+                                        <div class="exp-entry__role-head">
+                                            <h4>Lead Data Scientist</h4>
+                                            <span
+                                                >Riyadh, Saudi Arabia · Jan 2024
+                                                — Present</span
+                                            >
+                                        </div>
+                                        <ul>
+                                            <li>
+                                                Defined and led the company's
+                                                <strong>GenAI strategy</strong>
+                                                through research, vendor
+                                                engagement, and hands-on
+                                                prototyping — establishing the
+                                                tech stack, use cases, and
+                                                measurable business value.
+                                            </li>
+                                            <li>
+                                                Designed and productionized a
+                                                <strong
+                                                    >streaming multi-agent
+                                                    chatbot assistant</strong
+                                                >
+                                                using LlamaIndex, Redis,
+                                                Elasticsearch, FastAPI, and
+                                                Azure OpenAI — serving 300
+                                                concurrent users with RBAC,
+                                                custom LLM safeguards, and live
+                                                monitoring via Arize Phoenix.
+                                            </li>
+                                            <li>
+                                                Led the digitization of
+                                                <strong
+                                                    >5TB of scanned
+                                                    documents</strong
+                                                >
+                                                by architecting a pipeline using
+                                                Azure Document Intelligence, KNN
+                                                clustering, and LLMs — indexing
+                                                structured output in
+                                                Elasticsearch for semantic
+                                                search.
+                                            </li>
+                                            <li>
+                                                Led deployment of containerized
+                                                <strong
+                                                    >deep learning CV
+                                                    models</strong
+                                                >
+                                                as ONNX microservices, now used
+                                                daily by 200+ field technicians.
+                                            </li>
+                                            <li>
+                                                Introduced a standardized
+                                                <strong>CRISP-DM</strong> AI
+                                                development lifecycle and
+                                                implemented MLOps best
+                                                practices, reducing inference
+                                                times from minutes to
+                                                milliseconds.
+                                            </li>
+                                            <li>
+                                                Engaged with
+                                                <strong>Gartner</strong> and
+                                                <strong>Accenture</strong> to
+                                                refine GenAI tech stack, assess
+                                                AI maturity, and provide
+                                                strategic recommendations to
+                                                leadership.
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="exp-entry__role-block">
+                                        <div class="exp-entry__role-head">
+                                            <h4>Data Scientist</h4>
+                                            <span
+                                                >Riyadh, Saudi Arabia · Sep 2021
+                                                — Dec 2023</span
+                                            >
+                                        </div>
+                                        <p class="exp-entry__note">
+                                            Contracted via Masterworks,
+                                            Norconsult Telematics, and Solutions
+                                            by STC.
+                                        </p>
+
+                                        <div class="exp-entry__client-group">
+                                            <div class="exp-entry__client-head">
+                                                <h5>Solutions by STC</h5>
+                                                <span
+                                                    >Riyadh, SA · Aug 2022 — Dec
+                                                    2023</span
+                                                >
+                                            </div>
+                                            <ul>
+                                                <li>
+                                                    Achieved a
+                                                    <strong>27% greater</strong>
+                                                    reduction in tickets from
+                                                    the Tower Management System
+                                                    by using ML to mine
+                                                    associations in historical
+                                                    alarm data, surpassing the
+                                                    system's existing rules.
+                                                </li>
+                                                <li>
+                                                    Discovered opportunities for
+                                                    a <strong>12%</strong>
+                                                    revenue increase by
+                                                    clustering similar products
+                                                    in CRM and Billing systems.
+                                                </li>
+                                                <li>
+                                                    Designed a linear
+                                                    programming AI solution that
+                                                    cut technician assignment
+                                                    time from minutes to
+                                                    seconds.
+                                                </li>
+                                                <li>
+                                                    Partnered with
+                                                    infrastructure to overhaul
+                                                    the AI architecture,
+                                                    enabling a complete
+                                                    <strong
+                                                        >MLOps lifecycle</strong
+                                                    >.
+                                                </li>
+                                                <li>
+                                                    Developed a PoC QA chatbot
+                                                    answering questions over the
+                                                    company knowledge base using
+                                                    <strong
+                                                        >LLMs, LangChain, and a
+                                                        vector database</strong
+                                                    >.
+                                                </li>
+                                                <li>
+                                                    Deployed a navigational
+                                                    chatbot to production using
+                                                    <strong
+                                                        >Botpress and Kubernetes
+                                                        (OKD)</strong
+                                                    >, improving website
+                                                    navigation.
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="exp-entry__client-group">
+                                            <div class="exp-entry__client-head">
+                                                <h5>Norconsult Telematics</h5>
+                                                <span
+                                                    >Remote · Sep 2021 — Jul
+                                                    2022</span
+                                                >
+                                            </div>
+                                            <ul>
+                                                <li>
+                                                    Led the migration of BI
+                                                    dashboards from Tableau to
+                                                    Power BI, consolidating
+                                                    fragmented reporting into a
+                                                    unified platform.
+                                                </li>
+                                                <li>
+                                                    Automated ETL pipelines
+                                                    using Python and Apache
+                                                    Airflow, reducing manual
+                                                    data prep time by
+                                                    <strong>60%</strong>.
+                                                </li>
+                                                <li>
+                                                    Developed a predictive
+                                                    maintenance system with
+                                                    LightGBM, achieving up to
+                                                    <strong>72%</strong> outage
+                                                    detection accuracy.
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="exp-entry__client-group">
+                                            <div class="exp-entry__client-head">
+                                                <h5>Masterworks</h5>
+                                                <span
+                                                    >Riyadh, SA · Sep 2021 — Aug
+                                                    2022</span
+                                                >
+                                            </div>
+                                            <ul>
+                                                <li>
+                                                    Managed Python-based ETL
+                                                    jobs for data extraction and
+                                                    transformation, ensuring
+                                                    smooth integration with BI
+                                                    tools like Qlik Sense.
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- E-JUST -->
+                        <article class="exp-entry exp-reveal" style="--i: 2">
+                            <button
+                                class="exp-entry__trigger"
+                                aria-expanded="false"
+                            >
+                                <div class="exp-entry__metric">
+                                    <span class="exp-entry__number">4</span>
+                                    <span class="exp-entry__label"
+                                        >papers published</span
+                                    >
+                                </div>
+                                <div class="exp-entry__body">
+                                    <div class="exp-entry__head">
+                                        <h3 class="exp-entry__role">
+                                            Teaching &amp; Research Assistant
+                                        </h3>
+                                        <span class="exp-entry__at"
+                                            >@ E-JUST</span
+                                        >
+                                    </div>
+                                    <span class="exp-entry__meta"
+                                        >Borg Al Arab, Egypt · Oct 2019 — Sep
+                                        2021</span
+                                    >
+                                </div>
+                                <span
+                                    class="exp-entry__indicator"
+                                    aria-hidden="true"
+                                >
+                                    <svg
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 16 16"
+                                        fill="none"
+                                    >
+                                        <path
+                                            d="M4 6l4 4 4-4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="exp-entry__detail">
+                                <div class="exp-entry__detail-inner">
+                                    <ul>
+                                        <li>
+                                            Contributed to
+                                            <strong
+                                                >3 impactful research
+                                                projects</strong
+                                            >, resulting in 4 conference papers
+                                            — 2 as first author.
+                                        </li>
+                                        <li>
+                                            Conducted research on
+                                            <strong
+                                                >human activity
+                                                recognition</strong
+                                            >
+                                            using IMUs (inertial measurement
+                                            units), advancing understanding of
+                                            movement patterns.
+                                        </li>
+                                        <li>
+                                            Built an indoor workout virtual
+                                            coach combining human pose
+                                            estimation with AI-driven guidance
+                                            and personalization.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- DevisionX -->
+                        <article class="exp-entry exp-reveal" style="--i: 3">
+                            <button
+                                class="exp-entry__trigger"
+                                aria-expanded="false"
+                            >
+                                <div class="exp-entry__metric">
+                                    <span class="exp-entry__number">98%</span>
+                                    <span class="exp-entry__label"
+                                        >accuracy</span
+                                    >
+                                </div>
+                                <div class="exp-entry__body">
+                                    <div class="exp-entry__head">
+                                        <h3 class="exp-entry__role">
+                                            Machine Learning Engineer
+                                        </h3>
+                                        <span class="exp-entry__at"
+                                            >@ DevisionX</span
+                                        >
+                                    </div>
+                                    <span class="exp-entry__meta"
+                                        >Cairo, Egypt · Oct 2017 — Nov
+                                        2018</span
+                                    >
+                                </div>
+                                <span
+                                    class="exp-entry__indicator"
+                                    aria-hidden="true"
+                                >
+                                    <svg
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 16 16"
+                                        fill="none"
+                                    >
+                                        <path
+                                            d="M4 6l4 4 4-4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="exp-entry__detail">
+                                <div class="exp-entry__detail-inner">
+                                    <ul>
+                                        <li>
+                                            Executed computer vision tasks,
+                                            achieving
+                                            <strong>98% accuracy</strong>
+                                            training convolutional neural
+                                            networks to identify Arabic/Hindi
+                                            numerals in Egyptian ID cards.
+                                        </li>
+                                        <li>
+                                            Contributed to textile defect
+                                            classification using a combination
+                                            of traditional and AI-based computer
+                                            vision methods.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ░░ Projects ░░ -->
+            <section class="section section--alt" id="projects">
+                <div class="container">
+                    <p class="section__kicker">// projects</p>
+                    <h2 class="section__title">Selected work</h2>
+
+                    <div
+                        class="projects-filter"
+                        role="tablist"
+                        aria-label="Filter Projects"
+                    >
+                        <button
+                            class="filter-btn is-active"
+                            data-filter="all"
+                            role="tab"
+                            aria-selected="true"
+                        >
+                            All
+                        </button>
+                        <button
+                            class="filter-btn"
+                            data-filter="genai"
+                            role="tab"
+                            aria-selected="false"
+                        >
+                            GenAI &amp; Agents
+                        </button>
+                        <button
+                            class="filter-btn"
+                            data-filter="ml-cv"
+                            role="tab"
+                            aria-selected="false"
+                        >
+                            ML &amp; CV
+                        </button>
+                        <button
+                            class="filter-btn"
+                            data-filter="web-apps"
+                            role="tab"
+                            aria-selected="false"
+                        >
+                            Web &amp; Apps
+                        </button>
+                    </div>
+
+                    <div class="projects">
+                        <article class="card" data-category="genai web-apps">
+                            <div class="card__top">
+                                <span class="card__tag"
+                                    >GenAI · Desktop App</span
+                                >
+                                <span class="card__num">01</span>
+                            </div>
+                            <h3 class="card__title">SilverBrain</h3>
+                            <p class="card__desc">
+                                Dump everything in your head, let AI extract the
+                                tasks, sort them on an Eisenhower Matrix, and
+                                execute with Pomodoro focus — all in one calm
+                                desktop app.
+                            </p>
+                            <ul class="card__stack">
+                                <li>AI Task Extraction</li>
+                                <li>Eisenhower Matrix</li>
+                                <li>Pomodoro Focus</li>
+                                <li>Desktop App</li>
+                            </ul>
+                            <div class="card__links">
+                                <a
+                                    href="https://github.com/osamadel/SilverBrain"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >Repository ↗</a
+                                >
+                                <a
+                                    href="https://osamadel.github.io/SilverBrain/"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >Live App ↗</a
+                                >
+                            </div>
+                        </article>
+
+                        <article class="card" data-category="genai">
+                            <div class="card__top">
+                                <span class="card__tag"
+                                    >GenAI · Agent Workflow</span
+                                >
+                                <span class="card__num">02</span>
+                            </div>
+                            <h3 class="card__title">
+                                Resume Screening &amp; Filtration Multi-Agent
+                            </h3>
+                            <p class="card__desc">
+                                A multi-agent system powered by LlamaIndex
+                                AgentWorkflow and DeepSeek V3 that automatically
+                                parses batch resume PDFs, maps qualifications
+                                against a job description, scores alignment, and
+                                ranks the top-K applicants.
+                            </p>
+                            <ul class="card__stack">
+                                <li>LlamaIndex</li>
+                                <li>DeepSeek V3</li>
+                                <li>AgentWorkflow</li>
+                                <li>PDF Parsing</li>
+                            </ul>
+                            <div class="card__links">
+                                <a
+                                    href="https://github.com/osamadel/cv-screening-multi-agent"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >Repository ↗</a
+                                >
+                            </div>
+                        </article>
+
+                        <article class="card" data-category="ml-cv">
+                            <div class="card__top">
+                                <span class="card__tag"
+                                    >NLP · Deep Learning</span
+                                >
+                                <span class="card__num">03</span>
+                            </div>
+                            <h3 class="card__title">
+                                Arabic Text Diacritization (RoBERTa)
+                            </h3>
+                            <p class="card__desc">
+                                Fine-tuned a RoBERTa model on the Tashkeelah
+                                corpus to restore missing diacritics in Arabic
+                                text. Deployed and trained using PyTorch on dual
+                                NVIDIA A100 GPUs via Runpod for accelerated
+                                training.
+                            </p>
+                            <ul class="card__stack">
+                                <li>RoBERTa</li>
+                                <li>HuggingFace</li>
+                                <li>PyTorch</li>
+                                <li>Runpod</li>
+                                <li>NVIDIA A100</li>
+                            </ul>
+                            <div class="card__links">
+                                <a
+                                    href="https://github.com/osamadel/transformer-based-arabic-diacritization"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >Repository ↗</a
+                                >
+                            </div>
+                        </article>
+
+                        <article class="card" data-category="genai">
+                            <div class="card__top">
+                                <span class="card__tag"
+                                    >GenAI · Agentic RAG</span
+                                >
+                                <span class="card__num">04</span>
+                            </div>
+                            <h3 class="card__title">
+                                Employee HR Assistant Agent
+                            </h3>
+                            <p class="card__desc">
+                                Built an HR companion that parses corporate
+                                policies, queries the company's SQL HR database,
+                                drafts and sends emails, and directly interacts
+                                with embedded web applications to fill forms and
+                                redirect users.
+                            </p>
+                            <ul class="card__stack">
+                                <li>LlamaIndex</li>
+                                <li>FastAPI</li>
+                                <li>SQLAlchemy</li>
+                                <li>Chainlit</li>
+                                <li>Agentic RAG</li>
+                            </ul>
+                            <div class="card__links">
+                                <span class="card__link-note"
+                                    >Enterprise Tool</span
+                                >
+                            </div>
+                        </article>
+
+                        <article class="card" data-category="genai">
+                            <div class="card__top">
+                                <span class="card__tag"
+                                    >GenAI · Production RAG</span
+                                >
+                                <span class="card__num">05</span>
+                            </div>
+                            <h3 class="card__title">TAWAL Website Chatbot</h3>
+                            <p class="card__desc">
+                                Designed and deployed a production chatbot for
+                                TAWAL's corporate website. Integrates
+                                Elasticsearch for vector search and includes
+                                guardrails to screen and reject queries that are
+                                irrelevant or out-of-scope.
+                            </p>
+                            <ul class="card__stack">
+                                <li>LlamaIndex</li>
+                                <li>Elasticsearch</li>
+                                <li>Botpress</li>
+                                <li>Docker</li>
+                                <li>Kubernetes OKD</li>
+                            </ul>
+                            <div class="card__links">
+                                <span class="card__link-note"
+                                    >Production System</span
+                                >
+                            </div>
+                        </article>
+
+                        <article class="card" data-category="genai">
+                            <div class="card__top">
+                                <span class="card__tag"
+                                    >GenAI · Open Source</span
+                                >
+                                <span class="card__num">06</span>
+                            </div>
+                            <h3 class="card__title">
+                                LlamaIndex Core Contribution
+                            </h3>
+                            <p class="card__desc">
+                                Modified LlamaIndex's NLSQLRetriever core to
+                                support row retrieval for enhanced database
+                                querying context. Patched AgentWorkflow to
+                                streamline tool selection loops and integrated
+                                role-based tool authorization.
+                            </p>
+                            <ul class="card__stack">
+                                <li>LlamaIndex Core</li>
+                                <li>AgentWorkflow</li>
+                                <li>Text2SQL</li>
+                                <li>RBAC</li>
+                                <li>Python</li>
+                            </ul>
+                            <div class="card__links">
+                                <a
+                                    href="https://github.com/run-llama/llama_index/pull/17479"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >Pull Request ↗</a
+                                >
+                            </div>
+                        </article>
+
+                        <article class="card" data-category="ml-cv">
+                            <div class="card__top">
+                                <span class="card__tag"
+                                    >Computer Vision · MLOps</span
+                                >
+                                <span class="card__num">07</span>
+                            </div>
+                            <h3 class="card__title">
+                                Field Image Validation Services
+                            </h3>
+                            <p class="card__desc">
+                                Co-developed and containerized dual deep
+                                learning CV models to validate site maintenance
+                                images submitted by field technicians. Optimized
+                                performance utilizing ONNX Runtime, drastically
+                                reducing latency to milliseconds.
+                            </p>
+                            <ul class="card__stack">
+                                <li>Deep Learning</li>
+                                <li>Computer Vision</li>
+                                <li>ONNX Runtime</li>
+                                <li>Docker</li>
+                                <li>FastAPI</li>
+                            </ul>
+                            <div class="card__links">
+                                <span class="card__link-note"
+                                    >200+ Daily Techs</span
+                                >
+                            </div>
+                        </article>
+
+                        <article class="card" data-category="ml-cv">
+                            <div class="card__top">
+                                <span class="card__tag"
+                                    >Deep Learning · Research</span
+                                >
+                                <span class="card__num">08</span>
+                            </div>
+                            <h3 class="card__title">
+                                Inertial Gait-Based Person Authentication
+                            </h3>
+                            <p class="card__desc">
+                                A Siamese-network biometric framework using
+                                accelerometer and gyroscope wearables.
+                                Authenticates new subjects at test-time without
+                                requiring model retraining. Published and
+                                presented at IJCNN 2021.
+                            </p>
+                            <ul class="card__stack">
+                                <li>Siamese Networks</li>
+                                <li>TensorFlow</li>
+                                <li>IMU Signals</li>
+                                <li>Biometrics</li>
+                                <li>IJCNN</li>
+                            </ul>
+                            <div class="card__links">
+                                <a
+                                    href="https://github.com/osamadel/inertial-siamese"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >Repository ↗</a
+                                >
+                            </div>
+                        </article>
+
+                        <article class="card" data-category="web-apps">
+                            <div class="card__top">
+                                <span class="card__tag">NLP · Analytics</span>
+                                <span class="card__num">09</span>
+                            </div>
+                            <h3 class="card__title">
+                                Data Scientist In-Demand Skills Dashboard
+                            </h3>
+                            <p class="card__desc">
+                                Scraped job postings from LinkedIn, extracted
+                                skills with a fine-tuned HuggingFace NER model,
+                                and built an interactive Streamlit and Tableau
+                                dashboard to filter market demands.
+                            </p>
+                            <ul class="card__stack">
+                                <li>HuggingFace</li>
+                                <li>Streamlit</li>
+                                <li>Tableau</li>
+                                <li>Web Scraping</li>
+                                <li>NLP</li>
+                            </ul>
+                            <div class="card__links">
+                                <a
+                                    href="https://github.com/osamadel/data_skills_demand"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >Repository ↗</a
+                                >
+                                <a
+                                    href="https://www.youtube.com/watch?v=j6tO1GDK4wQ&list=PLeaehAJ_QLq_E4oUPIdF2WJ36IZsBH_KJ"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >Video series ↗</a
+                                >
+                            </div>
+                        </article>
+
+                        <article class="card" data-category="web-apps">
+                            <div class="card__top">
+                                <span class="card__tag"
+                                    >Finance · Islamic Law</span
+                                >
+                                <span class="card__num">10</span>
+                            </div>
+                            <h3 class="card__title">
+                                Zakat Calculator · حاسبة الزكاة
+                            </h3>
+                            <p class="card__desc">
+                                Calculate your overdue Zakat in a visual Gantt
+                                timeline. Supports Hijri calendar integration,
+                                gold/silver valuation, and features an
+                                offline-first responsive design.
+                            </p>
+                            <ul class="card__stack">
+                                <li>Hijri Calendar</li>
+                                <li>Gantt Timeline</li>
+                                <li>Offline-first</li>
+                                <li>CSS Grid</li>
+                            </ul>
+                            <div class="card__links">
+                                <a
+                                    href="portfolio/zakat-calculator.html"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >View App ↗</a
+                                >
+                            </div>
+                        </article>
+
+                        <article class="card" data-category="web-apps">
+                            <div class="card__top">
+                                <span class="card__tag"
+                                    >Dev Tools · Binary</span
+                                >
+                                <span class="card__num">11</span>
+                            </div>
+                            <h3 class="card__title">ELF File Visualizer</h3>
+                            <p class="card__desc">
+                                Drag and drop an ELF binary to inspect its
+                                structures in real time. Features a section
+                                minimap, color-coded hex dump, and full binary
+                                header breakdown.
+                            </p>
+                            <ul class="card__stack">
+                                <li>Binary Parsing</li>
+                                <li>Minimap View</li>
+                                <li>Hex Viewer</li>
+                                <li>Vanilla JS</li>
+                            </ul>
+                            <div class="card__links">
+                                <a
+                                    href="portfolio/elf-file-visualizer.html"
+                                    target="_blank"
+                                    rel="noopener"
+                                    >View App ↗</a
+                                >
+                            </div>
+                        </article>
+
+                        <article class="card" data-category="ml-cv">
+                            <div class="card__top">
+                                <span class="card__tag"
+                                    >Deep Learning · IoT</span
+                                >
+                                <span class="card__num">12</span>
+                            </div>
+                            <h3 class="card__title">
+                                Wearable IMU Activity Recognition
+                            </h3>
+                            <p class="card__desc">
+                                Collected multi-channel gait data using 8
+                                simultaneous on-body IMUs from 20+ subjects.
+                                Trained machine and deep learning systems to
+                                authenticate and classify gait activity, hitting
+                                99.8% test accuracy.
+                            </p>
+                            <ul class="card__stack">
+                                <li>Deep Learning</li>
+                                <li>IMU Sensors</li>
+                                <li>Signal Processing</li>
+                                <li>Activity Classification</li>
+                            </ul>
+                            <div class="card__links">
+                                <span class="card__link-note"
+                                    >99.8% Test Accuracy</span
+                                >
+                            </div>
+                        </article>
+
+                        <article class="card" data-category="ml-cv">
+                            <div class="card__top">
+                                <span class="card__tag"
+                                    >Computer Vision · IoT</span
+                                >
+                                <span class="card__num">13</span>
+                            </div>
+                            <h3 class="card__title">
+                                VCoach: Pose-Estimation Coaching
+                            </h3>
+                            <p class="card__desc">
+                                Investigated and integrated 2D/3D human pose
+                                estimation (HPE) with on-body IMU sensors.
+                                Designed algorithms to evaluate exercise
+                                execution quality and posture dynamically during
+                                workouts.
+                            </p>
+                            <ul class="card__stack">
+                                <li>Pose Estimation</li>
+                                <li>Computer Vision</li>
+                                <li>IMU Sensors</li>
+                                <li>Sensor Fusion</li>
+                            </ul>
+                            <div class="card__links">
+                                <span class="card__link-note"
+                                    >Biofeedback AI</span
+                                >
+                            </div>
+                        </article>
+
+                        <article class="card" data-category="ml-cv">
+                            <div class="card__top">
+                                <span class="card__tag"
+                                    >Signal Processing · ML</span
+                                >
+                                <span class="card__num">14</span>
+                            </div>
+                            <h3 class="card__title">
+                                MyoSpeech Signal Classification
+                            </h3>
+                            <p class="card__desc">
+                                Preprocessed and classified high-frequency
+                                muscle sensor data (MyoSpeech signals) from
+                                speech-impaired patients. Utilized scipy for
+                                spectral analysis and scikit-learn for utterance
+                                recognition.
+                            </p>
+                            <ul class="card__stack">
+                                <li>scikit-learn</li>
+                                <li>scipy</li>
+                                <li>Signal Processing</li>
+                                <li>Biomedical ML</li>
+                            </ul>
+                            <div class="card__links">
+                                <span class="card__link-note"
+                                    >HealthTech PoC</span
+                                >
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ░░ Education ░░ -->
+            <section class="section" id="education">
+                <div class="container">
+                    <p class="section__kicker">// education</p>
+                    <h2 class="section__title">Education</h2>
+                    <div class="edu">
+                        <article class="edu__item">
+                            <h3>
+                                M.Sc. — Egypt-Japan University of Science &amp;
+                                Technology
+                            </h3>
+                            <span class="edu__meta"
+                                >Egypt · Sep 2019 — Sep 2021</span
+                            >
+                            <ul>
+                                <li>
+                                    Graduated with a distinguished
+                                    <strong>GPA of 3.85</strong>.
+                                </li>
+                                <li>
+                                    Awarded a full teaching-assistant
+                                    scholarship.
+                                </li>
+                                <li>
+                                    Coursework: Advanced Intelligent Systems,
+                                    Advanced ML, Learning Algorithms, Neural
+                                    Networks.
+                                </li>
+                            </ul>
+                        </article>
+                        <article class="edu__item">
+                            <h3>
+                                B.Sc. — Faculty of Engineering, Mansoura
+                                University
+                            </h3>
+                            <span class="edu__meta"
+                                >Egypt · Sep 2011 — Sep 2016</span
+                            >
+                            <ul>
+                                <li>
+                                    Graduated
+                                    <strong>Very Good with Honors</strong>.
+                                </li>
+                                <li>
+                                    Major in Computer Engineering &amp; Systems.
+                                </li>
+                            </ul>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ░░ Contact ░░ -->
+            <section class="section section--contact" id="contact">
+                <div class="container contact">
+                    <p class="section__kicker">// contact</p>
+                    <h2 class="section__title">
+                        Let's build something intelligent
+                    </h2>
+                    <p class="contact__lead">
+                        Open to conversations about data science, applied AI,
+                        and multi-agent systems.
+                    </p>
+                    <form
+                        class="contact__form"
+                        action="https://api.web3forms.com/submit"
+                        method="POST"
+                    >
+                        <input
+                            type="hidden"
+                            name="access_key"
+                            value="718990c8-43e2-499a-9003-228e99de5757"
+                        />
+                        <input
+                            class="contact__input"
+                            type="text"
+                            name="name"
+                            placeholder="Your name"
+                            aria-label="Your name"
+                            required
+                        />
+                        <input
+                            class="contact__input"
+                            type="email"
+                            name="email"
+                            placeholder="Your email"
+                            aria-label="Your email"
+                            required
+                        />
+                        <textarea
+                            class="contact__input contact__textarea"
+                            name="message"
+                            placeholder="Tell me about your project"
+                            aria-label="Your message"
+                            required
+                        ></textarea>
+                        <div class="contact__actions">
+                            <button
+                                class="btn btn--primary contact__submit"
+                                type="submit"
+                            >
+                                <span>Submit</span>
+                                <span
+                                    class="contact__submit-icon"
+                                    aria-hidden="true"
+                                >
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            d="M4 12H20M20 12L13 5M20 12L13 19"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                    <div class="contact__links">
+                        <a
+                            class="contact__link"
+                            href="mailto:seem.1993@gmail.com"
+                        >
+                            <span class="contact__icon" aria-hidden="true"
+                                >✉</span
+                            >
+                            <span
+                                ><strong>Email</strong
+                                ><br />seem.1993@gmail.com</span
+                            >
+                        </a>
+                        <a
+                            class="contact__link"
+                            href="https://www.linkedin.com/in/osama-adel-shokry"
+                            target="_blank"
+                            rel="noopener"
+                        >
+                            <span class="contact__icon" aria-hidden="true"
+                                >in</span
+                            >
+                            <span
+                                ><strong>LinkedIn</strong
+                                ><br />osama-adel-shokry</span
+                            >
+                        </a>
+                        <a
+                            class="contact__link"
+                            href="https://github.com/osamadel"
+                            target="_blank"
+                            rel="noopener"
+                        >
+                            <span class="contact__icon" aria-hidden="true"
+                                >⌗</span
+                            >
+                            <span><strong>GitHub</strong><br />@osamadel</span>
+                        </a>
+                        <a
+                            class="contact__link"
+                            href="https://www.youtube.com/watch?v=j6tO1GDK4wQ&list=PLeaehAJ_QLq_E4oUPIdF2WJ36IZsBH_KJ"
+                            target="_blank"
+                            rel="noopener"
+                        >
+                            <span class="contact__icon" aria-hidden="true"
+                                >▶</span
+                            >
+                            <span><strong>YouTube</strong><br />Tutorials</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="container footer__inner">
+                <span>© <span id="year"></span> Osama Feshier</span>
+                <span class="footer__built"
+                    >Built with HTML, CSS &amp; deployed on GitHub Pages</span
+                >
             </div>
-            <ul>
-              <li>Contributed to 3 research projects, resulting in <strong>4 conference papers (2 as first author)</strong> — covering human activity recognition with IMUs, converting hums to spoken words for speech-impaired individuals, and an indoor-workout virtual coach.</li>
-            </ul>
-          </article>
+        </footer>
 
-          <article class="tl tl-cascade" style="--i:4">
-            <div class="tl__marker"></div>
-            <div class="tl__head">
-              <h3>Machine Learning Engineer <span class="tl__at">@ <a href="https://devisionx.com/" target="_blank" rel="noopener">DevisionX</a></span></h3>
-              <span class="tl__date">Oct 2017 — Nov 2018</span>
-            </div>
-            <ul>
-              <li>Achieved <strong>98% accuracy</strong> training CNNs to read Arabic/Hindi numerals on Egyptian ID cards, and contributed to textile defect classification using traditional and AI-based computer vision.</li>
-            </ul>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- ░░ Projects ░░ -->
-    <section class="section section--alt" id="projects">
-      <div class="container">
-        <p class="section__kicker">// projects</p>
-        <h2 class="section__title">Selected work</h2>
-        <div class="projects">
-          <article class="card">
-            <div class="card__top">
-              <span class="card__tag">NLP · Dashboard</span>
-              <span class="card__num">01</span>
-            </div>
-            <h3 class="card__title">Data Scientist In-Demand Skills Dashboard</h3>
-            <p class="card__desc">
-              Scraped ~400 data-scientist job postings from LinkedIn, extracted skills with a pre-trained
-              HuggingFace NER model, and built an interactive Streamlit + Tableau dashboard to filter
-              requirements by country, seniority, and more.
-            </p>
-            <ul class="card__stack">
-              <li>HuggingFace</li><li>Streamlit</li><li>Tableau</li><li>Web Scraping</li>
-            </ul>
-            <div class="card__links">
-              <a href="https://github.com/osamadel/data_skills_demand" target="_blank" rel="noopener">Repository ↗</a>
-              <a href="https://www.youtube.com/watch?v=j6tO1GDK4wQ&list=PLeaehAJ_QLq_E4oUPIdF2WJ36IZsBH_KJ" target="_blank" rel="noopener">Video series ↗</a>
-            </div>
-          </article>
-
-          <article class="card">
-            <div class="card__top">
-              <span class="card__tag">Deep Learning · Research</span>
-              <span class="card__num">02</span>
-            </div>
-            <h3 class="card__title">Inertial Gait-Based Person Authentication</h3>
-            <p class="card__desc">
-              A Siamese-network framework for inertial gait-based authentication. It learns on one set of
-              subjects and authenticates entirely new subjects at test time — no retraining from scratch.
-            </p>
-            <ul class="card__stack">
-              <li>Siamese Networks</li><li>Keras</li><li>IMU Signals</li><li>Metric Learning</li>
-            </ul>
-            <div class="card__links">
-              <a href="https://github.com/osamadel/inertial-siamese" target="_blank" rel="noopener">Repository ↗</a>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- ░░ Education ░░ -->
-    <section class="section" id="education">
-      <div class="container">
-        <p class="section__kicker">// education</p>
-        <h2 class="section__title">Education</h2>
-        <div class="edu">
-          <article class="edu__item">
-            <h3>M.Sc. — Egypt-Japan University of Science &amp; Technology</h3>
-            <span class="edu__meta">Egypt · Sep 2019 — Sep 2021</span>
-            <ul>
-              <li>Graduated with a distinguished <strong>GPA of 3.85</strong>.</li>
-              <li>Awarded a full teaching-assistant scholarship.</li>
-              <li>Coursework: Advanced Intelligent Systems, Advanced ML, Learning Algorithms, Neural Networks.</li>
-            </ul>
-          </article>
-          <article class="edu__item">
-            <h3>B.Sc. — Faculty of Engineering, Mansoura University</h3>
-            <span class="edu__meta">Egypt · Sep 2011 — Sep 2016</span>
-            <ul>
-              <li>Graduated <strong>Very Good with Honors</strong>.</li>
-              <li>Major in Computer Engineering &amp; Systems.</li>
-            </ul>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- ░░ Contact ░░ -->
-    <section class="section section--contact" id="contact">
-      <div class="container contact">
-        <p class="section__kicker">// contact</p>
-        <h2 class="section__title">Let's build something intelligent</h2>
-        <p class="contact__lead">
-          Open to conversations about data science, applied AI, and multi-agent systems.
-        </p>
-        <div class="contact__links">
-          <a class="contact__link" href="mailto:seem.1993@gmail.com">
-            <span class="contact__icon" aria-hidden="true">✉</span>
-            <span><strong>Email</strong><br>seem.1993@gmail.com</span>
-          </a>
-          <a class="contact__link" href="https://www.linkedin.com/in/osama-adel-shokry" target="_blank" rel="noopener">
-            <span class="contact__icon" aria-hidden="true">in</span>
-            <span><strong>LinkedIn</strong><br>osama-adel-shokry</span>
-          </a>
-          <a class="contact__link" href="https://github.com/osamadel" target="_blank" rel="noopener">
-            <span class="contact__icon" aria-hidden="true">⌗</span>
-            <span><strong>GitHub</strong><br>@osamadel</span>
-          </a>
-          <a class="contact__link" href="https://www.youtube.com/watch?v=j6tO1GDK4wQ&list=PLeaehAJ_QLq_E4oUPIdF2WJ36IZsBH_KJ" target="_blank" rel="noopener">
-            <span class="contact__icon" aria-hidden="true">▶</span>
-            <span><strong>YouTube</strong><br>Tutorials</span>
-          </a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <div class="container footer__inner">
-      <span>© <span id="year"></span> Osama Feshier</span>
-      <span class="footer__built">Built with HTML, CSS &amp; deployed on GitHub Pages</span>
-    </div>
-  </footer>
-
-  <script src="js/main.js"></script>
-</body>
+        <script src="js/main.js"></script>
+    </body>
 </html>
