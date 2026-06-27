@@ -538,6 +538,8 @@ a {
     list-style: none;
     display: grid;
     gap: 14px;
+    margin: 0;
+    padding: 0;
 }
 .about__pillars li {
     display: flex;
@@ -1261,6 +1263,52 @@ a {
     margin: 0 auto 32px;
     text-wrap: pretty;
 }
+.contact__form {
+    display: grid;
+    gap: 14px;
+    max-width: 680px;
+    margin: 0 auto 32px;
+    text-align: left;
+}
+.contact__input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+}
+.contact__input::placeholder {
+    color: var(--faint);
+}
+.contact__textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+.contact__actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 4px;
+}
+.contact__input:focus-visible,
+.contact__submit:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-color: var(--accent);
+}
+.contact__submit {
+    border: 0;
+    cursor: pointer;
+}
+.contact__submit-icon {
+    display: inline-flex;
+    align-items: center;
+}
+.contact__submit-icon svg {
+    width: 16px;
+    height: 16px;
+}
 .contact__links {
     display: flex;
     justify-content: center;
@@ -1497,6 +1545,15 @@ a {
 
     .skill-pill {
         min-width: 100%;
+    }
+
+    .contact__actions {
+        justify-content: stretch;
+    }
+
+    .contact__submit {
+        width: 100%;
+        justify-content: center;
     }
 
     .skills-domain__icon {
