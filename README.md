@@ -1,3 +1,26 @@
+# osamadel.github.io
+
+Personal website of **Osama Feshier** — Senior Data Scientist &amp; AI Engineer.
+Live at **https://osamadel.github.io**.
+
+A hand-built static site (HTML / CSS / vanilla JS) — no framework, no build step —
+deployed to GitHub Pages via GitHub Actions (`.github/workflows/deploy.yml`).
+
+```
+index.html        markup & content
+css/style.css     design system (dark "data-lab" theme, electric-blue accent)
+js/main.js        nav, scroll reveals, animated skill bars
+img/              assets
+.nojekyll         serve files as-is (Jekyll disabled)
+```
+
+To preview locally, run any static server from the repo root, e.g.
+`python3 -m http.server 8000`, then open http://localhost:8000.
+
+The content below is the source of truth for the site copy.
+
+---
+
 # Data Scientist
  <!-- @ Solutions by STC -->
 
